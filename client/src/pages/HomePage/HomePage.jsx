@@ -11,4 +11,13 @@ const Home = () => {
   );
 };
 
+//Forum homepage
+// const Forum = () => {
+//   return (
+//     <div>
+//       <h1>Welcome to our Forum!</h1>
+//     </div>
+//   );
+// };
+
 export default Home;
