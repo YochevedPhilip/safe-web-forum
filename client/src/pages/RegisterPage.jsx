@@ -1,16 +1,15 @@
-//import styles from './Home.module.css';
 import {useState} from "react";
 import {Link} from "react-router-dom"
-//import { useNavigate } from "react-router-dom";
 
-
-//Forum Login page
-const Login = () => {
+//Forum Register page
+const Register = () => {
   const [msg, setMsg] = useState("");
   return (
     <div>
-        <h1>Login to your account or create a new one!</h1>
+        <h1>Create a new account:</h1>
         <input placeholder="username" />
+        <br />
+        <input placeholder="mail" />
         <br />
         <input placeholder="password" />
         <br />
@@ -18,10 +17,10 @@ const Login = () => {
           fetch("http://localhost:5000/login", {method: "POST"}).then((r) => r.text()).then(setMsg);
         }}>Submit</button>
         <br />
-        <Link to="/register">register</Link>
+        <Link to="/login">sign in</Link>
         <p>{msg}</p>
     </div>
   );
 };
 
-export default Login;
+export default Register;

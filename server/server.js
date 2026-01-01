@@ -5,6 +5,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import rubberDuckRoutes from './routes/rubberDucks.js'; // Import the routes
 import loginRoutes from './routes/loginService.js'
+import registerRoutes from './routes/registerService.js'
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -24,14 +25,10 @@ app.use(cors())
 
 app.use(express.json());
 
-// app.post("/login", (req, res) => {
-//   console.log("Login button pressed");
-//   res.send("Create User")
-// })
-
 // Use the routes file for all `/ducks` routes
 app.use('/ducks', rubberDuckRoutes);
 app.use('/login', loginRoutes);
+app.use('/register', registerRoutes);
 
 // Start server
 const PORT = process.env.PORT;

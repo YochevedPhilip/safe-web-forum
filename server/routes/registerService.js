@@ -3,7 +3,7 @@ import express from 'express';
 const router = express.Router();
 
 router.post("/", (req, res) => {
-  console.log("register button pressed");
+  console.log("Login button pressed");
   res.send("button pressed")
 })
 
