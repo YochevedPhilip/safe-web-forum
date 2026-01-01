@@ -7,6 +7,7 @@ import dotenv from "dotenv";
 import rubberDuckRoutes from "./routes/rubberDucks.js";
 import topicRoutes from "./routes/topicRoute.js";
 import { connectDB } from "./data/db.js";
+import routesPosts from "./routes/routesPosts.js";
 
 dotenv.config();
 
@@ -27,6 +28,7 @@ app.use("/ducks", rubberDuckRoutes);
 
 app.use("/api/topics", topicRoutes);
 
+app.use("/posts", routesPosts);
 
 const PORT = process.env.PORT || 3000;
 
@@ -39,5 +41,5 @@ try {
   });
 } catch (err) {
   console.error("❌ Mongo connection failed", err);
-  throw err; // ✔️ במקום process.exit
+  throw err; 
 }
