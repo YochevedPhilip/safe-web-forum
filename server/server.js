@@ -4,8 +4,8 @@ import { fileURLToPath } from 'url';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import rubberDuckRoutes from './routes/rubberDucks.js'; // Import the routes
-import loginRoutes from './routes/loginService.js'
-import registerRoutes from './routes/registerService.js'
+import loginRoutes from './routes/loginRoute.js'
+import registerRoutes from './routes/registerRoute.js'
 import topicRoutes from "./routes/topicRoute.js";
 import { connectDB } from "./data/db.js";
 
@@ -26,7 +26,7 @@ app.use('/images', express.static(path.join(__dirname, 'images'))); // Serve sta
 
 app.use(cors())
 
-app.use(express.json());
+// app.use(express.json());
 
 // static
 app.use("/images", express.static(path.join(__dirname, "images")));

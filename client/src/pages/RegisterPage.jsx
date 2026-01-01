@@ -4,22 +4,47 @@ import {Link} from "react-router-dom"
 //Forum Register page
 const Register = () => {
   const [msg, setMsg] = useState("");
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleSubmit = async (e) => {e.preventDefault();
+
+    try {
+      const res = await fetch("http://localhost:5000/register", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({username, email, password}),
+      });
+      const text = await res.text();
+      setMsg(text||'status: ${res.status}');
+    } catch (err) {
+      setMsg("error: " + err.message);
+    }
+  };
+
   return (
-    <div>
+    <form onSubmit={handleSubmit}>
         <h1>Create a new account:</h1>
-        <input placeholder="username" />
+        <input placeholder="username" value={username} onChange={(e) => setUsername(e.target.value)}/>
         <br />
-        <input placeholder="mail" />
+        <input placeholder="email" value={email} onChange={(e) => setEmail(e.target.value)}/>
         <br />
-        <input placeholder="password" />
+        <input placeholder="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
         <br />
-        <button type="button" onClick={()=>{
-          fetch("http://localhost:5000/login", {method: "POST"}).then((r) => r.text()).then(setMsg);
-        }}>Submit</button>
+        <button type="submit">Submit</button> 
+        {/* onClick={()=>{
+          // fetch("http://localhost:5000/register", {method: "POST"}).then((r) => r.text()).then(setMsg);
+          fetch("http://localhost:5000/register", {
+            method: "POST", 
+            headers:{ "Content-Type": "application/json"},
+              body: JSON.stringify({username, email, password}),
+            });
+        }}>Submit</button> */}
         <br />
         <Link to="/login">sign in</Link>
         <p>{msg}</p>
-    </div>
+    </form>
   );
 };
 
