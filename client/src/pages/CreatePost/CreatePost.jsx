@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router";
 
 const CreatePost = () => {
-    const [title, setTitle] = useState(""); // כותרת הפוסט
+    const [title, setTitle] = useState(""); 
   const [text, setText] = useState("");
    const navigate = useNavigate();
 //צריך להוסיף שליחה לצאט שיחליט אם לפרסם או לא
