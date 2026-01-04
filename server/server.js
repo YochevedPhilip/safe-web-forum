@@ -15,15 +15,14 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
-// middleware שמטפל ב-CORS ו-preflight
 app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3001"); // כתובת ה-frontend שלך
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3001"); 
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
   res.setHeader("Access-Control-Allow-Credentials", "true");
 
   if (req.method === "OPTIONS") {
-    return res.sendStatus(200); // מחזיר 200 לכל preflight
+    return res.sendStatus(200); 
   }
 
   next();

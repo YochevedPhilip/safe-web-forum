@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 const CONTENT_STATUS = ['OK', 'SENSITIVE', 'HARMFUL'];
 const MOD_REASONS = [
   'HATE',
+
   'HARASSMENT',
   'SELF_HARM',
   'VIOLENCE',
@@ -51,6 +52,11 @@ const PostSchema = new mongoose.Schema(
       required: true,
       index: true,
     },
+anonymous: { 
+  type: Boolean, 
+  default: false,
+  index: true    
+},
 
     topicId: {
       type: mongoose.Schema.Types.ObjectId,

@@ -20,15 +20,3 @@ export const updatePost = async (id, updateData) => {
 export const deletePost = async (id) => {
   return await Post.findByIdAndUpdate(id, { deletedAt: new Date() }, { new: true });
 };
-
-export const moderatePost = async (id, moderationData) => {
-  const post = await Post.findById(id);
-  if (!post) return null;
-
-  post.moderation.status = moderationData.status || post.moderation.status;
-  post.moderation.reasons = moderationData.reasons || post.moderation.reasons;
-  post.moderation.helpFlag = moderationData.helpFlag ?? post.moderation.helpFlag;
-  post.moderation.evaluatedAt = new Date();
-
-  return await post.save();
-};
