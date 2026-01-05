@@ -13,6 +13,10 @@ export const userRepository = {
     return User.findById(id);
   },
 
+  findByEmail(email) {
+    return User.findOne({email});
+  },
+
 //   findByNormalizedTitle(normalizedTitle) {
 //     return User.findOne({ normalizedTitle });
 //   },

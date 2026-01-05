@@ -16,8 +16,20 @@ const Register = () => {
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({username, email, password}),
       });
-      const text = await res.text();
-      setMsg(text||'status: ${res.status}');
+      // const text = await res.text();
+      // setMsg(text||'status: ${res.status}');
+      const data = await res.json(); //read json
+      if(!res.ok) {
+        // backend should send {message:"..."} on errors
+        setMsg(data.message || 'status: ${res.status}');
+        return;
+      }
+
+      //save auth info
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+
+      setMsg(`Registered! Welcome ${data.user.username}`);
     } catch (err) {
       setMsg("error: " + err.message);
     }

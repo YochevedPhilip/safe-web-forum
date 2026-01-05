@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "eslint . && node server",
-    "dev": "eslint . && nodemon server",
+    "dev": "nodemon server",
     "lint": "eslint ."
   },
   "keywords": [],
