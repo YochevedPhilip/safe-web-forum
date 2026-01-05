@@ -7,17 +7,34 @@ const CreatePost = () => {
   const [text, setText] = useState("");
    const navigate = useNavigate();
 //צריך להוסיף שליחה לצאט שיחליט אם לפרסם או לא
-const handlePublish = () => {
-    if (title.length < 3) {
-      navigate("/error", { state: { message: "Title is too short." } });
-    } else if (text.length < 10) {
-      navigate("/error", { state: { message: "Content is too short." } });
-    } else if (text.includes("badword") || title.includes("badword")) {
-      navigate("/error", { state: { message: "Your post contains inappropriate content." } });
-    } else {
-      navigate("/post-published", { state: { title, text } });
+const handlePublish = async () => {  // <-- כאן הפונקציה async
+  if (title.length < 3) {
+    navigate("/error", { state: { message: "Title is too short." } });
+  } else if (text.length < 10) {
+    navigate("/error", { state: { message: "Content is too short." } });
+  } else if (text.includes("badword") || title.includes("badword")) {
+    navigate("/error", { state: { message: "Your post contains inappropriate content." } });
+  } else {
+    try {
+      // שולח את הפוסט לשרת / MongoDB
+      await fetch("http://localhost:5001/api/posts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          publisherId: "64c1f1d2a5e8b3a1f2c4d5e6",
+          topicId: "64c1f1d2a5e8b3a1f2c4d5e7",
+          title,
+          content: text
+        }),
+      });
+
+      // אחרי ההצלחה – ניווט לעמוד הפוסט
+      navigate("/post-published");
+    } catch (err) {
+      alert("Error publishing post: " + err.message);
     }
-  };
+  }
+};
 
   return (
     <div style={{ padding: "20px" }}>
