@@ -63,7 +63,11 @@ anonymous: {
       ref: 'Topic',
       required: true
     },
-
+    title: {              // <-- הוסף את זה
+      type: String,
+      required: true,
+      trim: true
+    },
     content: {
       type: String,
       required: true,
