@@ -1,8 +1,18 @@
 import styles from './Home.module.css';
 import RandomDuck from '../../components/RandomDuck/RandomDuck.jsx';
 
-// import {useState, useEffect} from "react";
+import {useState, useEffect} from "react";
 const Home = () => {
+  const [username] = useState(() => {
+    const storedUser = localStorage.getItem("user");
+    if(!storedUser) return null;
+
+    try{
+      return JSON.parse(storedUser).username;
+    } catch {
+      return null;
+    }
+  });
   // const [username, setUsername] = useState(null);
   // useEffect(() => {
   //   const storedUser = localStorage.getItem("user");
@@ -17,20 +27,12 @@ const Home = () => {
   // }, []);
   return (
     <div className={styles.home}>
-      {/* {username ? (<p>Welcome, {username}!</p>) : (<p>Not logged in</p>)} */}
-      <h1 className={styles.headline}>Duck It</h1>
-      <RandomDuck />
+      <h1>Home Page</h1>
+      {username ? (<p>Welcome, {username}!</p>) : (<p>You are not logged in</p>)}
+      {/* <h1 className={styles.headline}>Duck It</h1>
+      <RandomDuck /> */}
     </div>
   );
 };
-
-//Forum homepage
-// const Forum = () => {
-//   return (
-//     <div>
-//       <h1>Welcome to our Forum!</h1>
-//     </div>
-//   );
-// };
 
 export default Home;
