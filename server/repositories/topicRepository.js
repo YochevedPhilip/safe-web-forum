@@ -1,19 +1,25 @@
 import Topic from "../data/topicModel.js";
+import mongoose from "mongoose";
 
 export const topicRepository = {
-  create(data) {
-    return Topic.create(data);
-  },
 
-  findAll() {
-    return Topic.find({ isActive: true }).sort({ createdAt: -1 });
+  findAllByActivity() {
+    return Topic.find({ isActive: true })
+      .sort({ lastPostAt: -1, createdAt: -1 });
   },
 
   findById(id) {
-    return Topic.findById(id);
+    return Topic.findOne({ _id: id, isActive: true });
   },
 
   findByNormalizedTitle(normalizedTitle) {
     return Topic.findOne({ normalizedTitle });
   },
+
+  existsById(id) {
+    if (!mongoose.isValidObjectId(id)) return Promise.resolve(false);
+    return Topic.exists({ _id: new mongoose.Types.ObjectId(id) });
+  }
+
 };
+
