@@ -1,8 +1,11 @@
 import styles from './Home.module.css';
-import RandomDuck from '../../components/RandomDuck/RandomDuck.jsx';
+// import RandomDuck from '../../components/RandomDuck/RandomDuck.jsx';
 
-import {useState, useEffect} from "react";
+import {useState} from "react";
+import {useNavigate} from "react-router-dom"
+
 const Home = () => {
+  const navigate = useNavigate();
   const [username] = useState(() => {
     const storedUser = localStorage.getItem("user");
     if(!storedUser) return null;
@@ -13,22 +16,25 @@ const Home = () => {
       return null;
     }
   });
-  // const [username, setUsername] = useState(null);
-  // useEffect(() => {
-  //   const storedUser = localStorage.getItem("user");
-  //   if(storedUser) {
-  //     const user = JSON.parse(storedUser);
-  // //     setUsername(user.username);
-  //   const [username] = useState(() => {
-  //     const storedUser = localStorage.getItem("user");
-  //     return storedUser ? JSON.parse(storedUser).username : null;
-  //   });
-  //   }
-  // }, []);
+
+  const handleLogout = () => {
+    // remove auth data
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+
+    //go back to login page
+    navigate("/login") 
+  }
+
   return (
     <div className={styles.home}>
       <h1>Home Page</h1>
-      {username ? (<p>Welcome, {username}!</p>) : (<p>You are not logged in</p>)}
+      {username ? (
+        <>
+          <p>Welcome, {username}!</p>
+          <button onClick={handleLogout}>Logout</button>
+        </>):(<p>You are not logged in</p>)}
+      
       {/* <h1 className={styles.headline}>Duck It</h1>
       <RandomDuck /> */}
     </div>
