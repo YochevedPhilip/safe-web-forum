@@ -1,7 +1,7 @@
 import { userRepository } from "../repositories/userRepository.js";
 // import { normalizeTitle } from "../utils/normalize.js";
 
-// import bcrypt from "bcrypt"
+import bcrypt from "bcrypt"
 
 export class AppError extends Error {
   constructor(message, statusCode = 400) {
@@ -12,6 +12,7 @@ export class AppError extends Error {
 
 export const userService = {
   async createUser({ username, email, password }) {
+    const passwordHash = await bcrypt.hash(password, 10);
     if (!email || typeof email !== "string") {  // TODO: add email validity check
       throw new AppError("valid email is required", 400);
     }
@@ -34,17 +35,17 @@ export const userService = {
     //   title: title.trim(),
     //   normalizedTitle,
     //   createdByUserId,
-        email,
+        email: email.trim().toLowerCase(),
         username,
-        passwordHash: password,
+        passwordHash,
     });
   },
 
   async login({email, password}) {
-    const user = await userRepository.findByEmail(email);
+    const user = await userRepository.findByEmail(email.trim().toLowerCase());
     if(!user) throw new Error("Invalid email or password");
     // const user = await bcrypt.compare(password, user.passwordHash);
-    const ok = password === user.passwordHash;
+    const ok = await bcrypt.compare(password, user.passwordHash);//password === user.passwordHash;
     if (!ok) throw new Error("Invalid email or password");
 
     return user;
