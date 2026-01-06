@@ -7,6 +7,12 @@ import dotenv from "dotenv";
 import rubberDuckRoutes from "./routes/rubberDucks.js";
 import topicRoutes from "./routes/topicRoute.js";
 import { connectDB } from "./data/db.js";
+import { seedTopicsIfEmpty } from "./seeds/seedTopics.js";
+
+
+import "./data/userModel.js";
+import "./data/postModel.js";
+
 
 dotenv.config();
 
@@ -34,10 +40,12 @@ try {
   await connectDB();
   console.log("✅ Mongo connected");
 
+  await seedTopicsIfEmpty();
+
   app.listen(PORT, () => {
     console.log(`🚀 Server is running on port ${PORT}`);
   });
 } catch (err) {
   console.error("❌ Mongo connection failed", err);
-  throw err; // ✔️ במקום process.exit
+  throw err; 
 }
