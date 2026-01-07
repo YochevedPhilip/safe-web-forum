@@ -3,7 +3,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import rubberDuckRoutes from './routes/rubberDucks.js'; // Import the routes
+// import rubberDuckRoutes from './routes/rubberDucks.js'; // Import the routes
 import loginRoutes from './routes/loginRoute.js'
 import registerRoutes from './routes/registerRoute.js'
 import topicRoutes from "./routes/topicRoute.js";

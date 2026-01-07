@@ -16,7 +16,7 @@ export const userController = {
   //     return next(err);
   //   }
     // res.send("Successfully registered!");
-    async register(req, res, next) {
+    async register(req, res) {
       console.log("REGISTER BODY:", req.body);
     try {
       const { username, email, password } = req.body;
