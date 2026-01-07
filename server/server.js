@@ -7,6 +7,7 @@ import dotenv from 'dotenv';
 import loginRoutes from './routes/loginRoute.js'
 import registerRoutes from './routes/registerRoute.js'
 import topicRoutes from "./routes/topicRoute.js";
+import postRouter from "./routes/postRoute.js";
 import { connectDB } from "./data/db.js";
 import { seedTopicsIfEmpty } from "./seeds/seedTopics.js";
 
@@ -43,13 +44,16 @@ app.use('/login', loginRoutes);
 app.use('/register', registerRoutes);
 app.use("/api/topics", topicRoutes);
 
+app.use("/api/posts", postRouter);
+
+
 // Start server
 const PORT = process.env.PORT || 3000;
 try {
   await connectDB();
   console.log("✅ Mongo connected");
 
-  await seedTopicsIfEmpty();
+await seedTopicsIfEmpty();
 
   app.listen(PORT, () => {
     console.log(`🚀 Server is running on port ${PORT}`);

@@ -1,9 +1,9 @@
-import { BrowserRouter, Routes, Route, Link} from 'react-router-dom'
-import Home from './pages/HomePage/HomePage';
+import { BrowserRouter, Routes, Route, Link} from 'react-router-dom';
+import Home from './pages/HomePageDemo/HomePageDemo.jsx';
 import Login from './pages/LoginPage';
 import Register from './pages/RegisterPage';
 import styles from './styles/App.module.css';
-
+import TopicPage from './pages/TopicPage/TopicPage.jsx';
 import projectLogo from './assets/project-logo.png'
 
 function App() {
@@ -20,9 +20,12 @@ function App() {
         </header>
         <main className={styles.main}>
           <Routes>
+            {/*<Route path="/" element={<Home />} />*/}
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/topics/:topicId" element={<TopicPage />} />
+
           </Routes>
         </main>
         <footer className={styles.footer}>
