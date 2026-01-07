@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route} from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Link} from 'react-router-dom'
 import Home from './pages/HomePage/HomePage';
 import Login from './pages/LoginPage';
 import Register from './pages/RegisterPage';
@@ -13,9 +13,9 @@ function App() {
         <header className={styles.appHeader}>
           <img src={projectLogo} alt="Logo" className={styles.appLogo} />
           <nav className={styles.appNav}>
-            {/* <Link to="/" className={styles.appLink}>Home</Link>
+            <Link to="/" className={styles.appLink}>Home</Link>
             <Link to="/login" className={styles.appLink}>Login</Link>
-            <Link to="/register" className={styles.appLink}>Register</Link> */}
+            <Link to="/register" className={styles.appLink}>Register</Link>
           </nav>
         </header>
         <main className={styles.main}>
