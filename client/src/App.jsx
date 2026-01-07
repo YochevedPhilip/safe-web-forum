@@ -20,12 +20,10 @@ function App() {
         </header>
         <main className={styles.main}>
           <Routes>
-            {/*<Route path="/" element={<Home />} />*/}
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/topics/:topicId" element={<TopicPage />} />
-
           </Routes>
         </main>
         <footer className={styles.footer}>

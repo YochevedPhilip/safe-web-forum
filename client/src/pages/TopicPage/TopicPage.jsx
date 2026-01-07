@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
+import PostCard from "../../components/PostCard";
+import { topicsService } from "../../services/topicsService";
+import { postsService } from "../../services/postsService";
+import { likesService } from "../../services/likesService";
+
 const LIMIT = 10;
 
 const TopicPage = () => {
@@ -16,19 +21,20 @@ const TopicPage = () => {
   const [loading, setLoading] = useState(true); // טעינה ראשונית
   const [loadingMore, setLoadingMore] = useState(false); // טעינה של "עוד"
   const [error, setError] = useState(null);
-  
+
+  const normalizePosts = (list) =>
+    (Array.isArray(list) ? list : []).map((p) => ({
+      ...p,
+      _localLiked: p._localLiked ?? false,
+      likes: p.likes ?? p.stats?.likeCount ?? 0,
+    }));
 
   const fetchPostsPage = async (nextPage, { replace = false } = {}) => {
-    const res = await fetch(
-      `http://localhost:5000/api/posts/topics/${topicId}/posts?page=${nextPage}&limit=${LIMIT}`
-    );
-    if (!res.ok) throw new Error("Failed to fetch posts");
-    const data = await res.json();
+    const res = await postsService.getTopicPosts(topicId, nextPage, LIMIT);
+    const list = normalizePosts(res.data);
 
-    const list = Array.isArray(data) ? data : [];
     setPosts((prev) => (replace ? list : [...prev, ...list]));
     setPage(nextPage);
-
     setHasMore(list.length === LIMIT);
   };
 
@@ -45,9 +51,8 @@ const TopicPage = () => {
         setPage(1);
         setHasMore(true);
 
-        const topicRes = await fetch(`http://localhost:5000/api/topics/${topicId}`);
-        if (!topicRes.ok) throw new Error("Failed to fetch topic");
-        const topicData = await topicRes.json();
+        const topicRes = await topicsService.getTopic(topicId);
+        const topicData = topicRes.data;
         const title = topicData?.title ?? topicData?.topic?.title ?? "";
 
         if (!isMounted) return;
@@ -66,6 +71,7 @@ const TopicPage = () => {
     return () => {
       isMounted = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [topicId]);
 
   const loadMore = async () => {
@@ -78,6 +84,50 @@ const TopicPage = () => {
       setError(err?.message || "Something went wrong");
     } finally {
       setLoadingMore(false);
+    }
+  };
+
+  // ⭐ TOGGLE LIKE (Post)
+  const toggleLike = async (post) => {
+    const postId = String(post.id ?? post._id);
+    const wasLiked = Boolean(post._localLiked);
+
+    // optimistic UI
+    setPosts((prev) =>
+      prev.map((p) => {
+        const pid = String(p.id ?? p._id);
+        if (pid !== postId) return p;
+
+        return {
+          ...p,
+          _localLiked: !wasLiked,
+          likes: Math.max(0, (p.likes ?? 0) + (wasLiked ? -1 : 1)),
+        };
+      })
+    );
+
+    try {
+      if (wasLiked) {
+        await likesService.unlikePost(postId);
+      } else {
+        await likesService.likePost(postId);
+      }
+    } catch (err) {
+      // rollback
+      setPosts((prev) =>
+        prev.map((p) => {
+          const pid = String(p.id ?? p._id);
+          if (pid !== postId) return p;
+
+          return {
+            ...p,
+            _localLiked: wasLiked,
+            likes: Math.max(0, (p.likes ?? 0) + (wasLiked ? 1 : -1)),
+          };
+        })
+      );
+
+      setError(err?.message || "Failed to toggle like");
     }
   };
 
@@ -99,35 +149,14 @@ const TopicPage = () => {
         <p>No posts yet</p>
       ) : (
         <>
-          {posts.map((post) => {
-            const postId = String(post.id);
-
-            return (
-              <div
-                key={postId}
-                onClick={() => navigate(`/posts/${postId}`)}
-                style={{
-                  border: "1px solid #ccc",
-                  borderRadius: "8px",
-                  padding: "12px",
-                  marginBottom: "12px",
-                  cursor: "pointer",
-                }}
-              >
-                <h3>{post.title}</h3>
-                <p>{post.content}</p>
-
-                <small>
-                  By {post.author ?? "Anonymous"} ·{" "}
-                  {post.date ? new Date(post.date).toLocaleDateString() : ""}
-                </small>
-
-                <div style={{ marginTop: "8px" }}>
-                  ❤️ {post.likes ?? 0} &nbsp; 💬 {post.comments ?? 0}
-                </div>
-              </div>
-            );
-          })}
+          {posts.map((post) => (
+            <PostCard
+              key={String(post.id ?? post._id)}
+              post={post}
+              onOpen={(id) => navigate(`/posts/${id}`)}
+              onToggleLike={toggleLike}
+            />
+          ))}
 
           <div style={{ marginTop: 16 }}>
             {hasMore ? (

@@ -2,82 +2,79 @@ import mongoose from "mongoose";
 import { AppError } from "../errors/appError.js";
 import { likeRepository } from "../repositories/likeRepository.js";
 import Post from "../data/postModel.js";
+import Comment from "../data/commentModel.js"; 
 
-function isDuplicateKey(err) {
-  return err?.code === 11000;
-}
-
-export const likeService = {
-  /**
-   * Like לפוסט
-   * - אם כבר יש Like: לא מעלה count (אידמפוטנטי) ומחזיר liked:true
-   */
-  async likePost(postId, userId) {
-    if (!postId) throw new AppError("postId is required", 400);
-    if (!userId) throw new AppError("userId is required", 401);
-
-    if (!mongoose.Types.ObjectId.isValid(postId)) {
-      throw new AppError("Invalid postId", 400);
-    }
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-      throw new AppError("Invalid userId", 400);
-    }
-
-    // (אופציונלי) בדיקה שהפוסט קיים ולא מחוק/חסום/לא פורסם
-    const post = await Post.findOne({
-      _id: postId,
+const HANDLERS = {
+  post: {
+    Model: Post,
+    existsQuery: (id) => ({
+      _id: id,
       publishedAt: { $ne: null },
       blockedAt: null,
       deletedAt: null,
-    }).select({ _id: 1 }).lean();
+    }),
+    likeCountPath: "stats.likeCount",
+    notFoundMsg: "Post not found",
+  },
+  comment: {
+    Model: Comment,
+    existsQuery: (id) => ({
+      _id: id,
+      blockedAt: null,
+      deletedAt: null,
+    }),
+    likeCountPath: "stats.likeCount",
+    notFoundMsg: "Comment not found",
+  },
+};
 
-    if (!post) throw new AppError("Post not found", 404);
+function validateObjectId(id, name) {
+  if (!id) throw new AppError(`${name} is required`, 400);
+  if (!mongoose.Types.ObjectId.isValid(id)) throw new AppError(`Invalid ${name}`, 400);
+}
 
-    try {
-      await likeRepository.createPostLike(userId, postId);
+export const likeService = {
+  async like(userId, targetType, targetId) {
+    validateObjectId(targetId, "targetId");
+    validateObjectId(userId, "userId");
+    if (!targetType) throw new AppError("targetType is required", 400);
 
-      // מעדכנים ספירת לייקים על הפוסט בלי לגעת ב-postRepository
-      await Post.updateOne(
-        { _id: postId },
-        { $inc: { "stats.likeCount": 1 } }
-      );
+    const h = HANDLERS[targetType];
+    if (!h) throw new AppError("Invalid targetType", 400);
 
-      return { liked: true };
-    } catch (err) {
-      // אם כבר קיים Like - לא עושים inc נוסף
-      if (isDuplicateKey(err)) {
-        return { liked: true };
-      }
-      throw err;
+    const exists = await h.Model.findOne(h.existsQuery(targetId)).select({ _id: 1 }).lean();
+    if (!exists) throw new AppError(h.notFoundMsg, 404);
+
+    const res = await likeRepository.createLike({ userId, targetType, targetId });
+
+    if (res?.upsertedCount === 1) {
+      await h.Model.updateOne({ _id: targetId }, { $inc: { [h.likeCountPath]: 1 } });
     }
+
+    return { liked: true };
   },
 
-  /**
-   * Unlike לפוסט
-   * - מוריד count רק אם באמת נמחק Like
-   * - אם לא היה Like: לא עושה כלום (אידמפוטנטי) ומחזיר liked:false
-   */
-  async unlikePost(postId, userId) {
-    if (!postId) throw new AppError("postId is required", 400);
-    if (!userId) throw new AppError("userId is required", 401);
+  async unlike(userId, targetType, targetId) {
+  validateObjectId(targetId, "targetId");
+  validateObjectId(userId, "userId");
 
-    if (!mongoose.Types.ObjectId.isValid(postId)) {
-      throw new AppError("Invalid postId", 400);
-    }
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-      throw new AppError("Invalid userId", 400);
-    }
+  const h = HANDLERS[targetType];
+  if (!h) throw new AppError("Invalid targetType", 400);
 
-    const res = await likeRepository.deletePostLike(userId, postId);
+  const res = await likeRepository.deleteLike({
+    userId,
+    targetType,
+    targetId,
+  });
 
-    if (res.deletedCount === 1) {
-      // מורידים בבטחה כדי לא לרדת מתחת ל-0
-      await Post.updateOne(
-        { _id: postId, "stats.likeCount": { $gt: 0 } },
-        { $inc: { "stats.likeCount": -1 } }
-      );
-    }
+  if (res.deletedCount === 1) {
+    await h.Model.updateOne(
+      { _id: targetId, [h.likeCountPath]: { $gt: 0 } },
+      { $inc: { [h.likeCountPath]: -1 } }
+    );
+  }
 
-    return { liked: false };
-  },
+  return { liked: false };
+}
+
 };
