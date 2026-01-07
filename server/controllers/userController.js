@@ -46,7 +46,7 @@ export const userController = {
         token,
         user: {id: user._id, username: user.username, email: user.email},
       });
-    } catch (err) {
+    } catch {
       return res.status(401).json({message: "Invalid email or password"});
     }
   },
