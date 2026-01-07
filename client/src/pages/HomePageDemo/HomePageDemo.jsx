@@ -1,14 +1,13 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const HomePage = () => {
+const HomePageDemo = () => {
   const navigate = useNavigate();
 
   const [topics, setTopics] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // אופציונלי: אם אתם שומרים username ב-localStorage אחרי login
   const username = localStorage.getItem("username") || "User";
 
   useEffect(() => {
@@ -23,10 +22,7 @@ const HomePage = () => {
         if (!res.ok) throw new Error("Failed to fetch topics");
         const data = await res.json();
 
-        // תומך בכמה פורמטים נפוצים:
-        // 1) מערך ישיר: [{id,title}, ...]
-        // 2) עטיפה: { topics: [...] }
-        // 3) עטיפה אחרת: { data: [...] }
+    
         const list = Array.isArray(data)
           ? data
           : Array.isArray(data?.topics)
@@ -110,4 +106,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default HomePageDemo;

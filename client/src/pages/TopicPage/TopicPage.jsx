@@ -29,7 +29,6 @@ const TopicPage = () => {
     setPosts((prev) => (replace ? list : [...prev, ...list]));
     setPage(nextPage);
 
-    // אופציה A: אם חזר פחות מ-limit, נגמר
     setHasMore(list.length === LIMIT);
   };
 
