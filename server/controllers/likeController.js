@@ -1,27 +1,27 @@
 import { likeService } from "../services/likeService.js";
+import { AppError } from "../errors/appError.js";
 
 export const likeController = {
-  async likePost(req, res, next) {
+  async like(req, res, next) {
     try {
-      const { postId } = req.params;
+      const { targetType, targetId } = req.params;
+      const userId  = req.headers["x-user-id"]?.toString() || req.body?.userId?.toString();
+      if (!userId) throw new AppError("Unauthorized", 401);
 
-      // מניח שיש לך auth middleware שממלא req.user
-      const userId = req.user?._id  || "69568553da9fe30d410fbe7f";
-      const result = await likeService.likePost(postId, userId);
-
+      const result = await likeService.like(userId, targetType, targetId);
       res.status(200).json(result); // { liked: true }
     } catch (err) {
       next(err);
     }
   },
 
-  async unlikePost(req, res, next) {
+  async unlike(req, res, next) {
     try {
-      const { postId } = req.params;
+      const { targetType, targetId } = req.params;
+      const userId  = req.headers["x-user-id"]?.toString() || req.body?.userId?.toString();
+      if (!userId) throw new AppError("Unauthorized", 401);
 
-      const userId = req.user?._id || "69568553da9fe30d410fbe7f";
-      const result = await likeService.unlikePost(postId, userId);
-
+      const result = await likeService.unlike(userId, targetType, targetId);
       res.status(200).json(result); // { liked: false }
     } catch (err) {
       next(err);

@@ -8,6 +8,7 @@ import loginRoutes from './routes/loginRoute.js'
 import registerRoutes from './routes/registerRoute.js'
 import topicRoutes from "./routes/topicRoute.js";
 import postRouter from "./routes/postRoute.js";
+import likeRoutes from "./routes/likeRoute.js";
 import { connectDB } from "./data/db.js";
 import { seedTopicsIfEmpty } from "./seeds/seedTopics.js";
 
@@ -45,6 +46,7 @@ app.use('/register', registerRoutes);
 app.use("/api/topics", topicRoutes);
 
 app.use("/api/posts", postRouter);
+app.use("/api/likes", likeRoutes);
 
 
 // Start server

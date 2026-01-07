@@ -1,12 +1,9 @@
-import { Router } from "express";
+import express from "express";
 import { likeController } from "../controllers/likeController.js";
 
-const likeRouter = Router();
+const router = express.Router();
 
-// Like
-likeRouter.post("/posts/:postId/likes", likeController.likePost);
+router.post("/:targetType/:targetId", likeController.like);
+router.delete("/:targetType/:targetId", likeController.unlike);
 
-// Unlike
-likeRouter.delete("/posts/:postId/likes", likeController.unlikePost);
-
-export default likeRouter;
+export default router;
