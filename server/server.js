@@ -32,7 +32,7 @@ app.use(cors())
 app.use("/images", express.static(path.join(__dirname, "images")));
 
 // Use the routes file for all `/ducks` routes
-app.use('/ducks', rubberDuckRoutes);
+// app.use('/ducks', rubberDuckRoutes);
 app.use('/login', loginRoutes);
 app.use('/register', registerRoutes);
 app.use("/api/topics", topicRoutes);
