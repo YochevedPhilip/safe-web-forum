@@ -63,7 +63,7 @@ anonymous: {
       ref: 'Topic',
       required: true
     },
-    title: {              // <-- הוסף את זה
+    title: {           
       type: String,
       required: true,
       trim: true
