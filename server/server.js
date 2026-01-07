@@ -1,10 +1,11 @@
-import express from "express";
-import path from "path";
-import { fileURLToPath } from "url";
-import cors from "cors";
-import dotenv from "dotenv";
-
-import rubberDuckRoutes from "./routes/rubberDucks.js";
+import express from 'express';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import cors from 'cors';
+import dotenv from 'dotenv';
+// import rubberDuckRoutes from './routes/rubberDucks.js'; // Import the routes
+import loginRoutes from './routes/loginRoute.js'
+import registerRoutes from './routes/registerRoute.js'
 import topicRoutes from "./routes/topicRoute.js";
 import postRouter from "./routes/postRoute.js";
 import { connectDB } from "./data/db.js";
@@ -24,22 +25,30 @@ const app = express();
 
 // middleware
 app.use(express.json());
-app.use(cors({ origin: process.env.CLIENT_URL }));
+app.use('/images', express.static(path.join(__dirname, 'images'))); // Serve static images
+
+// app.use(cors({
+//   origin: process.env.CLIENT_URL
+// }));
+
+app.use(cors())
+
+// app.use(express.json());
 
 // static
 app.use("/images", express.static(path.join(__dirname, "images")));
 
-// routes
-app.use("/ducks", rubberDuckRoutes);
-
+// Use the routes file for all `/ducks` routes
+// app.use('/ducks', rubberDuckRoutes);
+app.use('/login', loginRoutes);
+app.use('/register', registerRoutes);
 app.use("/api/topics", topicRoutes);
 
 app.use("/api/posts", postRouter);
 
 
-
+// Start server
 const PORT = process.env.PORT || 3000;
-
 try {
   await connectDB();
   console.log("✅ Mongo connected");
