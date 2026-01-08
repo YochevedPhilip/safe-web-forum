@@ -16,7 +16,7 @@ const ErrorPost = () => {
       fontFamily: "Arial, sans-serif",
       lineHeight: "1.6"
     }}>
-      <h2 style={{ color: "#d8000c", marginBottom: "20px" }}>⚠️ פוסט נדחה</h2>
+      <h2 style={{ color: "#d8000c", marginBottom: "20px" }}>לא נוכל לפרסם את הפוסט</h2>
       <p style={{ fontSize: "16px", color: "#333" }}>{message}</p>
     </div>
   );
