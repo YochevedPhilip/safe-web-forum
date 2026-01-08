@@ -1,6 +1,5 @@
-import { useState } from "react";
-import { useNavigate, useParams } from "react-router";
-
+import  { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 const CreatePost = () => {
   const { topicId } = useParams();
