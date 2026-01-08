@@ -1,4 +1,7 @@
 import { postService } from '../services/postService.js';
+import Post from "../data/postModel.js";
+import Comment from "../data/commentModel.js";
+import mongoose from "mongoose";
 
 export const postController = {
     async getPostsByTopic(req, res, next) {
@@ -42,6 +45,37 @@ export const postController = {
     } catch (err) {
       next(err);
     }
-  }
+  },
+
+  async getPostPage(req, res) {
+    const { postId } = req.params;
+    const limit = Math.min(Number(req.query.limit || 10), 50);
+
+    if (!mongoose.isValidObjectId(postId)) {
+      return res.status(400).json({ message: "Invalid postId" });
+    }
+
+    const post = await Post.findOne({
+      _id: postId,
+      deletedAt: null,
+      blockedAt: null,
+      publishedAt: { $ne: null },
+    }).populate("publisherId", "username");
+
+    if (!post) return res.status(404).json({ message: "Post not found" });
+
+    const comments = await Comment.find({
+      postId,
+      parentCommentId: null,
+      deletedAt: null,
+      blockedAt: null,
+      publishedAt: { $ne: null },
+    })
+      .sort({ createdAt: -1 })
+      .limit(limit)
+      .populate("publisherId", "username");
+
+    return res.json({ post, comments });
+  },
 
 };

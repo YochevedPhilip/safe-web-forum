@@ -5,6 +5,7 @@ import Register from './pages/RegisterPage';
 import styles from './styles/App.module.css';
 import TopicPage from './pages/TopicPage/TopicPage.jsx';
 import projectLogo from './assets/project-logo.png'
+import PostPage from "./pages/PostPage.jsx";
 
 function App() {
   return (
@@ -24,6 +25,8 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/topics/:topicId" element={<TopicPage />} />
+            <Route path="/posts/:postId" element={<PostPage />} />
+            <Route path="/comments" element={<PostPage />} />
           </Routes>
         </main>
         <footer className={styles.footer}>

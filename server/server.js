@@ -9,6 +9,7 @@ import registerRoutes from './routes/registerRoute.js'
 import topicRoutes from "./routes/topicRoute.js";
 import postRouter from "./routes/postRoute.js";
 import likeRoutes from "./routes/likeRoute.js";
+import commentRouter from "./routes/commentRoute.js";
 import { connectDB } from "./data/db.js";
 import { seedTopicsIfEmpty } from "./seeds/seedTopics.js";
 
@@ -44,7 +45,7 @@ app.use("/images", express.static(path.join(__dirname, "images")));
 app.use('/login', loginRoutes);
 app.use('/register', registerRoutes);
 app.use("/api/topics", topicRoutes);
-
+app.use("/api/comments", commentRouter);
 app.use("/api/posts", postRouter);
 app.use("/api/likes", likeRoutes);
 
