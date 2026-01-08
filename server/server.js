@@ -12,7 +12,7 @@ import { seedTopicsIfEmpty } from "./seeds/seedTopics.js";
 import loginRoutes from './routes/loginRoute.js';
 import registerRoutes from './routes/registerRoute.js';
 import topicRoutes from "./routes/topicRoute.js";
-import postRouter from "./routes/postRoute.js";
+import postRouter from "./routes/postRouter.js";
 import likeRoutes from "./routes/likeRoute.js";
 import rubberDuckRoutes from "./routes/rubberDucks.js";
 
@@ -28,6 +28,7 @@ const app = express();
 const allowedOrigins = [
   "http://localhost:3000",
   "http://localhost:3001",
+  "http://localhost:3003",
   "http://localhost:3004"
 ];
 
