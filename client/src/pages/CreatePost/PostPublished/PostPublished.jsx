@@ -2,7 +2,7 @@ import { useLocation } from "react-router";
 
 const PostPublished = () => {
   const location = useLocation();
-  const text = location.state?.text || "No content";
+  const { text } = location.state || { text: "No content" };
 
   return (
     <div style={{ padding: "20px" }}>
