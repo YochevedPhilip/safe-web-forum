@@ -2,7 +2,7 @@ import styles from './Home.module.css';
 // import RandomDuck from '../../components/RandomDuck/RandomDuck.jsx';
 
 import {useState} from "react";
-import {useNavigate} from "react-router-dom"
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const navigate = useNavigate();
