@@ -11,7 +11,8 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = async(e) => {e.preventDefault();
+  const handleSubmit = async(e) => {
+    e.preventDefault();
     try{
       const res = await fetch("http://localhost:5000/login", {
         method: "POST",

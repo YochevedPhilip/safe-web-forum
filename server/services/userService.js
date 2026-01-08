@@ -1,8 +1,10 @@
+import User from "../data/userModel.js";
 import { userRepository } from "../repositories/userRepository.js";
 // import { normalizeTitle } from "../utils/normalize.js";
 
 import bcrypt from "bcrypt"
 
+//TODO: use the one in the errors file instead
 export class AppError extends Error {
   constructor(message, statusCode = 400) {
     super(message);
@@ -13,29 +15,27 @@ export class AppError extends Error {
 export const userService = {
   async createUser({ username, email, password }) {
     const passwordHash = await bcrypt.hash(password, 10);
-    if (!email || typeof email !== "string") {  // TODO: add email validity check
+    if (!email || !username || !password) {
+      throw new AppError("missing field", 400);
+    }
+    // check email validity
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (typeof email !== "string" || !emailRegex.test(email)) {  
       throw new AppError("valid email is required", 400);
     }
     if (email.trim().length === 0) {
       throw new AppError("email cannot be empty", 400);
     }
 
-    // TODO: add more validation checks for the rest of the fields
-
-    // const normalizedTitle = normalizeTitle(title);
-
-    //TODO: check if user already exists in db
-
-    // const existing = await userService.findByNormalizedTitle(normalizedTitle);
-    // if (existing) {
-    //   throw new AppError("user already exists", 409);
-    // }
+    //check if user already exists in db
+    const normalizedEmail = email.trim().toLowerCase();
+    const existingUser = await User.findOne({email: normalizedEmail});
+    if(existingUser) {
+      throw new Error("Email already registered");
+    }
 
     return userRepository.create({
-    //   title: title.trim(),
-    //   normalizedTitle,
-    //   createdByUserId,
-        email: email.trim().toLowerCase(),
+        email: normalizedEmail,
         username,
         passwordHash,
     });
@@ -44,20 +44,9 @@ export const userService = {
   async login({email, password}) {
     const user = await userRepository.findByEmail(email.trim().toLowerCase());
     if(!user) throw new Error("Invalid email or password");
-    // const user = await bcrypt.compare(password, user.passwordHash);
-    const ok = await bcrypt.compare(password, user.passwordHash);//password === user.passwordHash;
+    const ok = await bcrypt.compare(password, user.passwordHash);
     if (!ok) throw new Error("Invalid email or password");
 
     return user;
   },
-
-//   async listTopics() {
-//     return topicRepository.findAll();
-//   },
-
-//   async getTopicById(id) {
-//     const topic = await topicRepository.findById(id);
-//     if (!topic) throw new AppError("topic not found", 404);
-//     return topic;
-//   },
 };

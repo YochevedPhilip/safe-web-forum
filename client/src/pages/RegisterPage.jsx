@@ -1,5 +1,5 @@
 import {useState} from "react";
-import {Link} from "react-router-dom"
+import {Link, useNavigate} from "react-router-dom"
 
 //Forum Register page
 const Register = () => {
@@ -7,8 +7,10 @@ const Register = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
     try {
       const res = await fetch("http://localhost:5000/register", {
@@ -30,6 +32,8 @@ const Register = () => {
       localStorage.setItem("user", JSON.stringify(data.user));
 
       setMsg(`Registered! Welcome ${data.user.username}`);
+      
+      navigate("/");
     } catch (err) {
       setMsg("error: " + err.message);
     }
@@ -44,15 +48,7 @@ const Register = () => {
         <br />
         <input placeholder="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
         <br />
-        <button type="submit">Submit</button> 
-        {/* onClick={()=>{
-          // fetch("http://localhost:5000/register", {method: "POST"}).then((r) => r.text()).then(setMsg);
-          fetch("http://localhost:5000/register", {
-            method: "POST", 
-            headers:{ "Content-Type": "application/json"},
-              body: JSON.stringify({username, email, password}),
-            });
-        }}>Submit</button> */}
+        <button type="submit">Register</button> 
         <br />
         <Link to="/login">sign in</Link>
         <p>{msg}</p>
