@@ -10,28 +10,39 @@ import rubberDuckRoutes from "./routes/rubberDucks.js";
 import topicRoutes from "./routes/topicRoute.js";
 import routesPosts from "./routes/routesPosts.js";
 
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
 
+// ✅ CORS גמיש לכל ה‑origins הרלוונטיים
+const allowedOrigins = [
+  "http://localhost:3000",
+  "http://localhost:3001",
+  "http://localhost:3004"
+];
+
 app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3001"); 
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+  }
+
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
   res.setHeader("Access-Control-Allow-Credentials", "true");
 
   if (req.method === "OPTIONS") {
-    return res.sendStatus(200); 
+    return res.sendStatus(200);
   }
 
   next();
 });
 
+// JSON body parser
 app.use(express.json());
 
-// static
+// static files
 app.use("/images", express.static(path.join(__dirname, "images")));
 
 // routes
