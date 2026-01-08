@@ -1,6 +1,5 @@
 import styles from './Home.module.css';
 import RandomDuck from '../../components/RandomDuck/RandomDuck.jsx';
-import React from "react";
 import { Link } from "react-router";
 
 const Home = () => {
