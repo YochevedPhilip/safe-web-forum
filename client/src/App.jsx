@@ -27,7 +27,7 @@ function App() {
   <Route path="/register" element={<Register />} />
   <Route path="/topics/:topicId" element={<TopicPage />} />
 
-  <Route path="/create-post" element={<CreatePost />} />
+<Route path="/topics/:topicId/create-post" element={<CreatePost />} />
   <Route path="/post-published" element={<PostPublished />} />
   <Route path="/error" element={<ErrorPost />} />
 </Routes>
