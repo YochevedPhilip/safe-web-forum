@@ -18,7 +18,7 @@ const HomePageDemo = () => {
         setLoading(true);
         setError(null);
 
-        const res = await fetch("http://localhost:5000/api/topics");
+        const res = await fetch("http://localhost:5001/api/topics");
         if (!res.ok) throw new Error("Failed to fetch topics");
         const data = await res.json();
 
