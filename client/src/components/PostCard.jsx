@@ -19,11 +19,11 @@ export default function PostCard({ post, onOpen, onToggleLike }) {
       <p>{post.content}</p>
 
       <small>
-        By {post.author ?? "Anonymous"} ·{" "}
+        נכתב על ידי {post.author ?? "משתמש אנונימי"} ·{" "}
         {post.date ? new Date(post.date).toLocaleDateString() : ""}
       </small>
-
-      <div style={{ marginTop: 8, display: "flex", gap: 16 }}>
+      
+      <div style={{ marginTop: 8, display: "flex", gap: 16, direction: "ltr",}}>
         <button
           type="button"
           onClick={(e) => {

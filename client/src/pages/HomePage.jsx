@@ -9,7 +9,7 @@ const HomePageDemo = () => {
   const [error, setError] = useState(null);
   const API_BASE_URL = import.meta.env.VITE_SERVER_API_URL;
 
-  const username = localStorage.getItem("username") || "User";
+  const username = JSON.parse(localStorage.getItem("user")).username;
 
   useEffect(() => {
     let isMounted = true;
@@ -23,14 +23,14 @@ const HomePageDemo = () => {
         if (!res.ok) throw new Error("Failed to fetch topics");
         const data = await res.json();
 
-    
+
         const list = Array.isArray(data)
           ? data
           : Array.isArray(data?.topics)
-          ? data.topics
-          : Array.isArray(data?.data)
-          ? data.data
-          : [];
+            ? data.topics
+            : Array.isArray(data?.data)
+              ? data.data
+              : [];
 
         if (!isMounted) return;
         setTopics(list);
@@ -53,7 +53,6 @@ const HomePageDemo = () => {
 
   return (
     <div style={{ padding: 20 }}>
-      {/* Avatar בסיסי (כמו בדיזיין) */}
       <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
         <div
           aria-label="avatar"
@@ -70,10 +69,10 @@ const HomePageDemo = () => {
           {String(username).charAt(0).toUpperCase()}
         </div>
 
-        <h2 style={{ margin: 0 }}>Welcome, {username}!</h2>
+        <h2 style={{ margin: 0 }}>שלום, {username}!</h2>
       </div>
 
-      <h3 style={{ marginTop: 0 }}>Trending topics</h3>
+      <h3 style={{ marginTop: 0 }}>נושאים חמים</h3>
 
       {topics.length === 0 ? (
         <p>No topics yet</p>

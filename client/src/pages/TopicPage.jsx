@@ -131,7 +131,7 @@ const TopicPage = () => {
     }
   };
 
-  if (loading) return <p>Loading posts...</p>;
+  if (loading) return <p>טוען פוסטים...</p>;
   if (error) return <p>Error: {error}</p>;
 
   return (
@@ -142,11 +142,11 @@ const TopicPage = () => {
         onClick={() => navigate(`/topics/${topicId}/create-post`)}
         style={{ marginBottom: "20px" }}
       >
-        + Create Post
+        + יצירת פוסט חדש
       </button>
 
       {posts.length === 0 ? (
-        <p>No posts yet</p>
+        <p>עדיין לא נכתבו פוסטים תחת נושא זה</p>
       ) : (
         <>
           {posts.map((post) => (
@@ -161,10 +161,10 @@ const TopicPage = () => {
           <div style={{ marginTop: 16 }}>
             {hasMore ? (
               <button onClick={loadMore} disabled={loadingMore}>
-                {loadingMore ? "Loading..." : "Load more"}
+                {loadingMore ? "טוען..." : "טען עוד"}
               </button>
             ) : (
-              <p style={{ opacity: 0.7 }}>No more posts</p>
+              <p style={{ opacity: 0.7 }}>אין פוסטים נוספים</p>
             )}
           </div>
         </>
