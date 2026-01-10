@@ -1,107 +1,50 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-
-const HomePageDemo = () => {
-  const navigate = useNavigate();
-
+const HomePageDemo = ({ searchQuery = "" }) => { // הוסיפי את ה-searchQuery בתוך הסוגריים  const navigate = useNavigate();
   const [topics, setTopics] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
-  const username = localStorage.getItem("username") || "User";
+  const getTopicImage = (title, index) => {
+    const images = {
+      "כלים להרגעה וחוסן נפשי": "https://images.unsplash.com/photo-1506126613408-eca07ce68773?q=80&w=800",
+      "תחושת בדידות": "https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?q=80&w=800",
+      "יחסים עם הורים ומשפחה": "https://images.unsplash.com/photo-1490312278390-ab64016e0aa9?q=80&w=800",
+      "עתיד, חלומות וקריירה": "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?q=80&w=800",
+      "חברות וקשרים חברתיים": "https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=800",
+      "דימוי עצמי וביטחון": "https://images.unsplash.com/photo-1515377905703-c4788e51af15?q=80&w=800"
+    };
+    return images[title] || `https://picsum.photos/seed/${index}/800/600?grayscale`;
+  };
 
   useEffect(() => {
-    let isMounted = true;
-
     const fetchTopics = async () => {
       try {
-        setLoading(true);
-        setError(null);
-
         const res = await fetch("http://localhost:5001/api/topics");
-        if (!res.ok) throw new Error("Failed to fetch topics");
         const data = await res.json();
-
-    
-        const list = Array.isArray(data)
-          ? data
-          : Array.isArray(data?.topics)
-          ? data.topics
-          : Array.isArray(data?.data)
-          ? data.data
-          : [];
-
-        if (!isMounted) return;
-        setTopics(list);
-      } catch (err) {
-        if (!isMounted) return;
-        setError(err?.message || "Something went wrong");
-      } finally {
-        if (isMounted) setLoading(false);
-      }
+        setTopics(Array.isArray(data) ? data : data?.topics || []);
+      } catch (err) { console.error(err); }
+      finally { setLoading(false); }
     };
-
     fetchTopics();
-    return () => {
-      isMounted = false;
-    };
   }, []);
-
-  if (loading) return <p style={{ padding: 20 }}>Loading topics...</p>;
-  if (error) return <p style={{ padding: 20 }}>Error: {error}</p>;
+  const filteredTopics = topics.filter(t => 
+    t.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+  if (loading) return <div className="mainContainer" style={{textAlign:'center'}}>טוען חוויה...</div>;
 
   return (
-    <div style={{ padding: 20 }}>
-      {/* Avatar בסיסי (כמו בדיזיין) */}
-      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
-        <div
-          aria-label="avatar"
-          style={{
-            width: 44,
-            height: 44,
-            borderRadius: "50%",
-            border: "1px solid #ccc",
-            display: "grid",
-            placeItems: "center",
-            fontWeight: 700,
-          }}
-        >
-          {String(username).charAt(0).toUpperCase()}
-        </div>
-
-        <h2 style={{ margin: 0 }}>Welcome, {username}!</h2>
+    <div className="mainContainer">
+      <h1 className="heroTitle">מה שעל <b>הלב שלך</b> היום?</h1>
+      
+      <div className="topicsGrid">
+      {filteredTopics.map((t, index) => (  
+                <div key={index} className="topicCard" onClick={() => navigate(`/topics/${t.id || t._id}`)}>
+            <img src={getTopicImage(t.title, index)} alt={t.title} />
+            <div className="topicOverlay">
+              <h3 className="topicTitle">{t.title}</h3>
+            </div>
+          </div>
+        ))}
       </div>
-
-      <h3 style={{ marginTop: 0 }}>Trending topics</h3>
-
-      {topics.length === 0 ? (
-        <p>No topics yet</p>
-      ) : (
-        <ul style={{ paddingLeft: 18 }}>
-          {topics.map((t) => {
-            const id = String(t.id ?? t._id ?? t.topicId ?? "");
-            const title = t.title ?? t.name ?? "Topic";
-
-            return (
-              <li key={id || title} style={{ marginBottom: 10 }}>
-                <button
-                  onClick={() => navigate(`/topics/${id}`)}
-                  style={{
-                    background: "none",
-                    border: "none",
-                    padding: 0,
-                    cursor: "pointer",
-                    textDecoration: "underline",
-                    fontSize: 16,
-                  }}
-                >
-                  {title}
-                </button>
-              </li>
-            );
-          })}
-        </ul>
-      )}
     </div>
   );
 };
