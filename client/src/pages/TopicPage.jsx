@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
-import PostCard from "../../components/PostCard";
-import { topicsService } from "../../services/topicsService";
-import { postsService } from "../../services/postsService";
-import { likesService } from "../../services/likesService";
+import PostCard from "../components/PostCard";
+import { topicsService } from "../services/topicsService";
+import { postsService } from "../services/postsService";
+import { likesService } from "../services/likesService";
 
 const LIMIT = 10;
 

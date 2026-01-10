@@ -7,6 +7,7 @@ const HomePageDemo = () => {
   const [topics, setTopics] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const API_BASE_URL = import.meta.env.VITE_SERVER_API_URL;
 
   const username = localStorage.getItem("username") || "User";
 
@@ -18,7 +19,7 @@ const HomePageDemo = () => {
         setLoading(true);
         setError(null);
 
-        const res = await fetch("http://localhost:5001/api/topics");
+        const res = await fetch(`${API_BASE_URL}/api/topics`);
         if (!res.ok) throw new Error("Failed to fetch topics");
         const data = await res.json();
 

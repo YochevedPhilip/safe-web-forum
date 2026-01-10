@@ -11,6 +11,8 @@ const CreatePost = () => {
 
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
+  const API_BASE_URL = import.meta.env.VITE_SERVER_API_URL;
+
 
   const handlePublish = async () => {
     if (title.length < 3) {
@@ -27,12 +29,13 @@ const CreatePost = () => {
     setProgress(10);
 
     try {
+
       // סימולציה של טעינה מדורגת
       const interval = setInterval(() => {
         setProgress((prev) => (prev < 90 ? prev + 10 : prev));
       }, 300);
 
-      const res = await fetch("http://localhost:5001/api/posts", {
+      const res = await fetch(`${API_BASE_URL}/api/posts`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

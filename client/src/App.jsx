@@ -1,13 +1,13 @@
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
-import Home from './pages/HomePageDemo/HomePageDemo.jsx';
+import Home from './pages/HomePage.jsx';
 import Login from './pages/LoginPage';
 import Register from './pages/RegisterPage';
 import styles from './styles/App.module.css';
-import TopicPage from './pages/TopicPage/TopicPage.jsx';
+import TopicPage from './pages/TopicPage.jsx';
 import CreatePost from './pages/CreatePost/CreatePost.jsx';
-import projectLogo from './assets/project-logo.png'
-import PostPublished from './pages/CreatePost/PostPublished/PostPublished.jsx';
-import ErrorPost from './pages/CreatePost/PostPublished/ErrorPost.jsx';
+import projectLogo from './assets/logoSashag.png'
+import PostPublished from './pages/CreatePost/PostPublished.jsx';
+import ErrorPost from './pages/CreatePost/ErrorPost.jsx';
 function App() {
   return (
     <BrowserRouter>
@@ -21,16 +21,15 @@ function App() {
           </nav>
         </header>
         <main className={styles.main}>
-        <Routes>
-  <Route path="/" element={<Home />} />
-  <Route path="/login" element={<Login />} />
-  <Route path="/register" element={<Register />} />
-  <Route path="/topics/:topicId" element={<TopicPage />} />
-
-<Route path="/topics/:topicId/create-post" element={<CreatePost />} />
-  <Route path="/post-published" element={<PostPublished />} />
-  <Route path="/error" element={<ErrorPost />} />
-</Routes>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/topics/:topicId" element={<TopicPage />} />
+            <Route path="/topics/:topicId/create-post" element={<CreatePost />} />
+            <Route path="/post-published" element={<PostPublished />} />
+            <Route path="/error" element={<ErrorPost />} />
+          </Routes>
 
         </main>
         <footer className={styles.footer}>

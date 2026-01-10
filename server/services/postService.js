@@ -29,14 +29,12 @@ export const postService = {
         const safeLimit = Math.min(Math.max(Number(limit) || 10, 1), 50);
         const skip = (safePage - 1) * safeLimit;
 
-    // 1️⃣ מביאים את הפוסטים
     const posts = await postRepository.findByTopicId(
       topicId,
       safeLimit,
       skip
     );
 
-    // 2️⃣ אם אין משתמש מחובר – מחזירים likedByMe = false
     if (!userId) {
       return posts.map((p) => ({
         ...p,
@@ -44,7 +42,6 @@ export const postService = {
       }));
     }
 
-    // 3️⃣ מביאים את הלייקים של המשתמש לפוסטים האלו
     const likes = await likeRepository.findByUserAndTargets(
       userId,
       "post",
@@ -55,7 +52,6 @@ export const postService = {
       likes.map((l) => String(l.targetId))
     );
 
-    // 4️⃣ מחזירים פוסטים עם likedByMe
     return posts.map((p) => ({
       ...p,
       likedByMe: likedPostIds.has(String(p._id)),

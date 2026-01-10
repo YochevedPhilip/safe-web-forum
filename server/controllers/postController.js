@@ -1,5 +1,5 @@
 import * as postRepo from "../repositories/postRepository.js";
-import { checkPostContent } from "../services/services/aiModeration.js";
+import { checkPostContent } from "../services/aiModeration.js";
 import { postService } from "../services/postService.js"; // אם צריך פונקציות נוספות
 
 export const postController = {
