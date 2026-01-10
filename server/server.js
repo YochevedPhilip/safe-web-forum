@@ -1,9 +1,6 @@
 import dotenv from "dotenv";
 dotenv.config();
-
 import express from "express";
-import path from "path";
-import { fileURLToPath } from "url";
 
 import { connectDB } from "./data/db.js";
 import { seedTopicsIfEmpty } from "./seeds/seedTopics.js";
@@ -13,13 +10,10 @@ import registerRoutes from './routes/registerRoute.js';
 import topicRoutes from "./routes/topicRoute.js";
 import postRouter from "./routes/postRouter.js";
 import likeRoutes from "./routes/likeRoute.js";
-import rubberDuckRoutes from "./routes/rubberDucks.js";
 
 import "./data/userModel.js";
 import "./data/postModel.js";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const app = express();
 
@@ -50,18 +44,14 @@ app.use((req, res, next) => {
 // JSON body parser
 app.use(express.json());
 
-// Serve static files
-app.use("/images", express.static(path.join(__dirname, "images")));
 
 // Routes
-app.use("/ducks", rubberDuckRoutes);
 app.use("/login", loginRoutes);
 app.use("/register", registerRoutes);
 app.use("/api/topics", topicRoutes);
 app.use("/api/posts", postRouter);
 app.use("/api/likes", likeRoutes);
-
-const PORT = process.env.PORT || 5001;
+const PORT = process.env.PORT;
 
 try {
   await connectDB();

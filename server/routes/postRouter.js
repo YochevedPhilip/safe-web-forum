@@ -1,6 +1,5 @@
 import { Router } from "express";
 import { postController } from "../controllers/postController.js";
-//import { optionalAuth } from "../middlewares/authMiddleware.js";
 
 const postRouter = Router();
 
