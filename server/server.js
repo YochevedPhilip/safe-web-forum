@@ -1,9 +1,6 @@
 import dotenv from "dotenv";
 dotenv.config();
-
 import express from "express";
-import path from "path";
-import { fileURLToPath } from "url";
 
 import { connectDB } from "./data/db.js";
 import { seedTopicsIfEmpty } from "./seeds/seedTopics.js";
@@ -17,7 +14,6 @@ import likeRoutes from "./routes/likeRoute.js";
 import "./data/userModel.js";
 import "./data/postModel.js";
 
-const __filename = fileURLToPath(import.meta.url);
 
 const app = express();
 
