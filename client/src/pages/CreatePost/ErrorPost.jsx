@@ -14,7 +14,7 @@ const ErrorPost = () => {
       margin: "40px auto",
       lineHeight: "1.6"
     }}>
-      <h2 style={{ color: "#d8000c", marginBottom: "20px" }}>לא נוכל לפרסם את הפוסט</h2>
+      <h2 style={{ color: "#d73b43", marginBottom: "20px" }}>לא נוכל לפרסם את הפוסט</h2>
       <p>{message}</p>
     </div>
   );

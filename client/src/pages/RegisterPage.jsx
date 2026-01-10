@@ -7,11 +7,13 @@ const Register = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const API_BASE_URL = import.meta.env.VITE_SERVER_API_URL;
+
 
   const handleSubmit = async (e) => {e.preventDefault();
 
     try {
-      const res = await fetch("http://localhost:5000/register", {
+      const res = await fetch(`${API_BASE_URL}/register`, {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({username, email, password}),

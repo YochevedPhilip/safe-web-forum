@@ -8,6 +8,8 @@ const CreatePost = () => {
   const [title, setTitle] = useState("");
   const [text, setText] = useState("");
   const [isAnonymous, setIsAnonymous] = useState(false);
+  const API_BASE_URL = import.meta.env.VITE_SERVER_API_URL;
+
 
   const handlePublish = async () => {
     if (title.length < 3) {
@@ -20,7 +22,8 @@ const CreatePost = () => {
     }
 
     try {
-      const res = await fetch("http://localhost:5001/api/posts", {
+
+      const res = await fetch(`${API_BASE_URL}/api/posts`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
