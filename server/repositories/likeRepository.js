@@ -20,7 +20,15 @@ createLike({ userId, targetType, targetId }) {
     });
   },
 
- 
+ findByUserAndTargets(userId, targetType, targetIds) {
+    return Like.find({
+      userId,
+      targetType,
+      targetId: { $in: targetIds },
+    })
+      .select({ targetId: 1, _id: 0 })
+      .lean();
+  },
  
 
 };

@@ -5,7 +5,7 @@ export const likeController = {
   async like(req, res, next) {
     try {
       const { targetType, targetId } = req.params;
-      const userId  = req.headers["x-user-id"]?.toString() || req.body?.userId?.toString();
+      const userId = req.user.userId;
       if (!userId) throw new AppError("Unauthorized", 401);
 
       const result = await likeService.like(userId, targetType, targetId);
@@ -18,7 +18,7 @@ export const likeController = {
   async unlike(req, res, next) {
     try {
       const { targetType, targetId } = req.params;
-      const userId  = req.headers["x-user-id"]?.toString() || req.body?.userId?.toString();
+      const userId = req.user.userId;
       if (!userId) throw new AppError("Unauthorized", 401);
 
       const result = await likeService.unlike(userId, targetType, targetId);

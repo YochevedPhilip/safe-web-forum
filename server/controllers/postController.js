@@ -43,8 +43,10 @@ export const postController = {
     try {
       const { topicId } = req.params;
       const { page, limit } = req.query;
+      const userId = req.user?.userId;
 
-      const posts = await postService.getPostsByTopic(topicId, { page, limit });
+
+      const posts = await postService.getPostsByTopic(topicId, { page, limit, userId });
       const items = posts.map((p) => ({
         id: p._id,
         title: p.title,
@@ -53,7 +55,13 @@ export const postController = {
         date: p.publishedAt ?? p.createdAt,
         likes: p.stats?.likeCount ?? 0,
         comments: p.stats?.commentCount ?? 0,
+        likedByMe: Boolean(p.likedByMe),
+       
+
+
       }));
+      console.log("first item likedByMe:", items[0]?.likedByMe);
+
 
       res.status(200).json(items);
     } catch (err) {
