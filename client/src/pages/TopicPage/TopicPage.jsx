@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router";
+import { useParams, useNavigate } from "react-router-dom";
 
 import PostCard from "../../components/PostCard";
 import { topicsService } from "../../services/topicsService";
@@ -18,14 +18,14 @@ const TopicPage = () => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
 
-  const [loading, setLoading] = useState(true); // טעינה ראשונית
-  const [loadingMore, setLoadingMore] = useState(false); // טעינה של "עוד"
+  const [loading, setLoading] = useState(true); 
+  const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState(null);
 
   const normalizePosts = (list) =>
     (Array.isArray(list) ? list : []).map((p) => ({
       ...p,
-      _localLiked: p._localLiked ?? false,
+      _localLiked: Boolean(p.likedByMe),
       likes: p.likes ?? p.stats?.likeCount ?? 0,
     }));
 

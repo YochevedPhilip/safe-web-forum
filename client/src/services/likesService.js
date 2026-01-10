@@ -1,21 +1,27 @@
 import api from "./api";
-
 export const likesService = {
   likePost(postId) {
-    const user = JSON.parse(localStorage.getItem("user") || "null");
-    const userId = user?._id || user?.id;
+    const token = localStorage.getItem("token");
 
-    return api.post(`/api/likes/post/${postId}`, {}, {
-      headers: { "x-user-id": userId },
-    });
+    return api.post(
+      `/api/likes/post/${postId}`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
   },
 
   unlikePost(postId) {
-    const user = JSON.parse(localStorage.getItem("user") || "null");
-    const userId = user?._id || user?.id;
+    const token = localStorage.getItem("token");
 
     return api.delete(`/api/likes/post/${postId}`, {
-      headers: { "x-user-id": userId },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
   },
 };
+
