@@ -246,3 +246,113 @@ a {
   opacity: 1; /* בולט מההתחלה */
   pointer-events: none;
 }
+/* עיצוב כללי לכפתורים באתר */
+.button-primary {
+  background-color: var(--peach-soft); /* הוורוד שאתה אוהב */
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 30px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  font-family: inherit;
+}
+
+.button-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(255,154,139,0.3);
+  filter: brightness(1.05);
+}
+
+.button-primary:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  transform: none;
+}
+/* מכולה גנרית לטפסים (כמו יצירת פוסט) */
+.form-card {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 30px;
+  background-color: white;
+  border-radius: var(--card-radius);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+}
+
+/* עיצוב אחיד לשדות קלט */
+.form-control {
+  width: 100%;
+  padding: 12px 15px;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+.form-control:focus {
+  border-color: var(--mint-soft);
+  outline: none;
+}
+
+/* כפתור ורוד שמתאים לאתר */
+.btn-pink {
+  width: 100%;
+  padding: 15px;
+  background-color: var(--peach-soft); /* הוורוד שלך */
+  color: white;
+  border: none;
+  border-radius: 30px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s, filter 0.2s;
+}
+
+.btn-pink:hover:not(:disabled) {
+  filter: brightness(1.05);
+  transform: translateY(-2px);
+}
+
+.btn-pink:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}/* תיבת הודעה כללית (שגיאה/הצלחה) */
+.message-card {
+  max-width: 600px;
+  margin: 60px auto;
+  padding: 40px;
+  background-color: white;
+  border-radius: var(--card-radius);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  text-align: center;
+}
+
+.message-card h2 {
+  color: var(--luxury-dark);
+  margin-bottom: 15px;
+}
+
+.message-card p {
+  color: #666;
+  font-size: 1.1rem;
+}
+
+/* כפתור חזרה - משתמש במשתנה המנטה */
+.btn-back {
+  display: inline-block;
+  margin-top: 25px;
+  padding: 10px 25px;
+  background-color: var(--mint-soft);
+  color: white;
+  border-radius: 25px;
+  font-weight: 600;
+  transition: var(--transition-smooth);
+}
+
+.btn-back:hover {
+  transform: scale(1.05);
+  filter: brightness(1.05);
+}
