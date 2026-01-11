@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
-const HomePageDemo = ({ searchQuery = "" }) => { // הוסיפי את ה-searchQuery בתוך הסוגריים  const navigate = useNavigate();
+// 1. חובה לייבא את useNavigate מהספרייה
+import { useNavigate } from "react-router-dom"; 
+
+const HomePageDemo = ({ searchQuery = "" }) => {
+  // 2. הגדרת הניווט בתוך הקומפוננטה
+  const navigate = useNavigate(); 
+  
   const [topics, setTopics] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -21,14 +27,19 @@ const HomePageDemo = ({ searchQuery = "" }) => { // הוסיפי את ה-searchQ
         const res = await fetch("http://localhost:5001/api/topics");
         const data = await res.json();
         setTopics(Array.isArray(data) ? data : data?.topics || []);
-      } catch (err) { console.error(err); }
-      finally { setLoading(false); }
+      } catch (err) { 
+        console.error("שגיאה בטעינת נושאים:", err); 
+      } finally { 
+        setLoading(false); 
+      }
     };
     fetchTopics();
   }, []);
+
   const filteredTopics = topics.filter(t => 
     t.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
   if (loading) return <div className="mainContainer" style={{textAlign:'center'}}>טוען חוויה...</div>;
 
   return (
@@ -36,8 +47,16 @@ const HomePageDemo = ({ searchQuery = "" }) => { // הוסיפי את ה-searchQ
       <h1 className="heroTitle">מה שעל <b>הלב שלך</b> היום?</h1>
       
       <div className="topicsGrid">
-      {filteredTopics.map((t, index) => (  
-                <div key={index} className="topicCard" onClick={() => navigate(`/topics/${t.id || t._id}`)}>
+        {filteredTopics.map((t, index) => (  
+          <div 
+            key={t.id || t._id || index} 
+            className="topicCard" 
+            onClick={() => {
+              const id = t.id || t._id;
+              console.log("מנווט לנושא:", id); // לבדיקה בקונסול
+              navigate(`/topics/${id}`);
+            }}
+          >
             <img src={getTopicImage(t.title, index)} alt={t.title} />
             <div className="topicOverlay">
               <h3 className="topicTitle">{t.title}</h3>

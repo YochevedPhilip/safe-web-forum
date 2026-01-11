@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import Home from './pages/HomePageDemo/HomePageDemo.jsx';
 import Login from './pages/LoginPage';
@@ -8,7 +9,6 @@ import CreatePost from './pages/CreatePost/CreatePost.jsx';
 import PostPublished from './pages/CreatePost/PostPublished/PostPublished.jsx';
 import ErrorPost from './pages/CreatePost/PostPublished/ErrorPost.jsx'; 
 import logo from './assets/logo.png';
-import { useState } from 'react'; // הוסיפי את השורה הזו
 function App() {
   const [searchQuery, setSearchQuery] = useState("");
   const username = localStorage.getItem("username") || "User";
