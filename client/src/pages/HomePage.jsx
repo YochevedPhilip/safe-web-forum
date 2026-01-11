@@ -32,7 +32,7 @@ const HomePageDemo = ({ searchQuery = "" }) => {
       try {
         setLoading(true);
         setError(null);
-        const res = await fetch(`${API_BASE_URL}api/topics`); // TODO: decide where is the /
+        const res = await fetch(`${API_BASE_URL}/api/topics`); // TODO: decide where is the /
         if (!res.ok) throw new Error("Failed to fetch topics");
         const data = await res.json();
         const list = Array.isArray(data)
