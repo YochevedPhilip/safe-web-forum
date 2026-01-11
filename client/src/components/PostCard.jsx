@@ -1,46 +1,49 @@
 import PropTypes from "prop-types";
 
-
 export default function PostCard({ post, onOpen, onToggleLike }) {
   const postId = String(post.id ?? post._id);
 
   return (
     <div
+      className="post-card" // משתמש בעיצוב היוקרתי מה-CSS
       onClick={() => onOpen(postId)}
-      style={{
-        border: "1px solid #ccc",
-        borderRadius: "8px",
-        padding: "12px",
-        marginBottom: "12px",
-        cursor: "pointer",
-      }}
     >
-      <h3>{post.title}</h3>
-      <p>{post.content}</p>
+      <div className="post-header">
+        <h3 className="post-title">{post.title}</h3>
+      </div>
 
-      <small>
-        נכתב על ידי {post.author ?? "משתמש אנונימי"} ·{" "}
-        {post.date ? new Date(post.date).toLocaleDateString() : ""}
-      </small>
-      
-      <div style={{ marginTop: 8, display: "flex", gap: 16, direction: "ltr",}}>
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            onToggleLike(post);
-          }}
-          style={{
-            border: "none",
-            background: "transparent",
-            cursor: "pointer",
-            padding: 0,
-          }}
-        >
-          {post._localLiked ? "❤️" : "🤍"} {post.likes}
-        </button>
+      {/* תוכן הפוסט */}
+      <p className="post-content">{post.content}</p>
 
-        <span>💬 {post.comments ?? 0}</span>
+      {/* מחבר ותאריך */}
+      <div style={{ marginBottom: '10px' }}>
+        <small className="post-author">
+          פורסם על ידי {post.author ?? "אנונימי"} ·{" "}
+          {post.date ? new Date(post.date).toLocaleDateString('he-IL') : ""}
+        </small>
+      </div>
+
+      {/* Footer: לייקים ותגובות */}
+      <div className="post-footer">
+        <div style={{ display: "flex", gap: "20px" }}>
+          <button
+            type="button"
+            className={`like-section ${post._localLiked ? 'liked' : ''}`}
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleLike(post);
+            }}
+            style={{ border: "none", background: "transparent", cursor: "pointer", padding: 0 }}
+          >
+            <span style={{ fontSize: '1.2rem' }}>{post._localLiked ? "❤️" : "🤍"}</span>
+            <span style={{ marginRight: '5px' }}>{post.likes}</span>
+          </button>
+
+          <div className="like-section" style={{ cursor: 'default' }}>
+            <span style={{ fontSize: '1.1rem' }}>💬</span>
+            <span style={{ marginRight: '5px' }}>{post.comments ?? 0}</span>
+          </div>
+        </div>
       </div>
     </div>
   );

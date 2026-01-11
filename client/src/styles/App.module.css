@@ -1,53 +1,163 @@
-/* App.module.css */
-.app {
-  text-align: center;
+/* --- Header --- */
+.appHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 60px;
+  
+  /* השורה ששומרת על הלוגו בשמאל בלי לשבור את העיצוב */
+  direction: ltr; 
+  
+  background: linear-gradient(135deg, rgba(118,200,147,0.85), rgba(255,154,139,0.8));
+  border-radius: 0 0 50px 50px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
-.appHeader {
-  background-color: #53474F;
-  padding: 5px 30px 5px 30px;
-  color: white;
+/* בגלל שהפכנו את ה-Header ל-LTR, אנחנו צריכים להחזיר את הטקסט בתפריט שיראה טוב */
+.appNav {
   display: flex;
+  gap: 30px;
   align-items: center;
-  justify-content: space-between;
+  direction: rtl; /* מחזיר את העברית לסדר הנכון בתוך התפריט */
 }
 
 .appLogo {
-  height: 100px;
+  height: 120px;
+  width: auto;
+  object-fit: contain;
+  background: transparent; /* מוודא שאין רקע שהוגדר בטעות */
+  mix-blend-mode: multiply; /* טריק: מעלים רקע לבן על רקע צבעוני (עובד לפעמים) */
 }
 
-.appNav {
-  display: flex;
-  gap: 20px;
-}
-
+/* --- קישורים ותפריט --- */
 .appLink {
-  background: none;
-  border: none;
-  padding: 0;
-  font: inherit;
-  color: inherit;
+  position: relative;
+  color: white;
+  font-size: 1.1em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* אפקט קו תחתון ב-hover */
+.appLink::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -5px;
+  right: 0;
+  background-color: white;
+  transition: width 0.3s ease;
+}
+
+.appLink:hover::after {
+  width: 100%;
+}
+
+.appLink:hover {
+  opacity: 0.8;
+}
+
+/* Avatar בצד ה־Nav */
+.avatar {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background-color: #5fb3c1;
+  color: white;
+  display: grid;
+  place-items: center;
+  font-weight: bold;
+  font-size: 1.2rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  border: 2px solid white;
   cursor: pointer;
 }
 
-
-.appLink:hover {
-  text-decoration: underline;
+/* --- Main --- */
+.mainContainer {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 50px 20px 120px;
 }
 
-.main {
-  padding: 20px;
-  background-color: #FFDCE8;
-  height: 100vh;
+/* --- Post Cards --- */
+.topicCard {
+  position: relative;
+  height: 320px;
+  border-radius: var(--card-radius);
+  overflow: hidden;
+  cursor: pointer;
+  background-color: white;
+  transition: var(--transition-smooth);
+  border: 1px solid rgba(0,0,0,0.03);
 }
 
-.footer {
-  padding: 10px;
-  background-color: #53474F;
+.topicCard:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+}
+
+.topicCard img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1s ease;
+}
+
+.topicCard:hover img {
+  transform: scale(1.1);
+}
+
+.topicOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.3) 0%, transparent 60%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 30px;
+  transition: var(--transition-smooth);
+}
+
+.topicCard:hover .topicOverlay {
+  background: linear-gradient(135deg, rgba(118,200,147,0.85), rgba(255,154,139,0.8));
+}
+
+.topicTitle {
   color: white;
-  position: fixed;
+  font-size: 1.6rem;
+  font-weight: 700;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+
+.joinIndicator {
+  color: white;
+  font-size: 0.85rem;
+  margin-top: 8px;
+  font-weight: 400;
+  opacity: 0;
+  transform: translateX(10px);
+  transition: var(--transition-smooth);
+}
+
+.topicCard:hover .joinIndicator {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* --- Footer --- */
+.footer {
+  padding: 15px;
+  background-color: var(--luxury-dark);
+  color: white;
+  text-align: center;
+  position: relative;
   width: 100%;
   bottom: 0;
-  text-align: center;
+  z-index: 1000;
 }
-  
