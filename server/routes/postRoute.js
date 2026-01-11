@@ -1,10 +1,15 @@
-import {Router} from 'express';
-import {postController} from '../controllers/postController.js';
+import { Router } from "express";
+import { postController } from "../controllers/postController.js";
+import { requireAuth } from "../middlewares/authMiddleware.js";
 
 const postRouter = Router();
 
-postRouter.get('/topics/:topicId/posts', postController.getPostsByTopic);
-postRouter.get("/", postController.getAllPosts);
+// GET
+postRouter.get("/", postController.getAllPosts); 
+postRouter.get("/topics/:topicId/posts",requireAuth, postController.getPostsByTopic); 
 postRouter.get("/:postId", postController.getPostPage);
+
+// POST
+ postRouter.post("/",requireAuth, postController.createPost);
 
 export default postRouter;

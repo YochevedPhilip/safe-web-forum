@@ -69,13 +69,14 @@ function AppLayout() {
           <Route path="/post-published" element={<PostPublished />} />
           <Route path="/error" element={<ErrorPost />} />
           <Route path="/posts/:postId" element={<PostPage />} />
-          <Route path="/comments" element={<PostPage />} />
+          <Route path="/posts/:postId/comments" element={<PostPage />} />
+
         </Routes>
       </main>
 
       {/* Footer */}
       <footer className="footer">
-        <p>&copy; 2024 SafeTalk</p>
+        <p>&copy; 2026 SafeTalk</p>
       </footer>
     </div>
   );

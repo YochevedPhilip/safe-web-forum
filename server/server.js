@@ -9,7 +9,7 @@ import { seedTopicsIfEmpty } from "./seeds/seedTopics.js";
 import loginRoutes from './routes/loginRoute.js';
 import registerRoutes from './routes/registerRoute.js';
 import topicRoutes from "./routes/topicRoute.js";
-import postRouter from "./routes/postRouter.js";
+import postRouter from "./routes/postRoute.js";
 import likeRoutes from "./routes/likeRoute.js";
 
 import "./data/userModel.js";

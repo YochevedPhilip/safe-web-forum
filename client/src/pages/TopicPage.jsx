@@ -138,7 +138,7 @@ const TopicPage = ({ searchQuery }) => {
               <PostCard
                 key={String(post.id ?? post._id)}
                 post={post}
-                onOpen={(id) => navigate(`/posts/${id}`)}
+                onOpen={() => navigate(`/posts/${post.id ?? post._id}`)}
                 onToggleLike={toggleLike}
               />
             ))}
