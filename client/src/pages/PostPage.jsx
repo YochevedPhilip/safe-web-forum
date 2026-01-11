@@ -47,47 +47,90 @@ export default function PostPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [postId]);
 
-  const handleAddComment = async (e) => {
-    e.preventDefault();
-    setMsg("");
+  // const handleAddComment = async (e) => {
+  //   e.preventDefault();
+  //   setMsg("");
 
-    const content = newComment.trim();
-    if (!content) {
-      setMsg("Comment cannot be empty");
+  //   const content = newComment.trim();
+  //   if (!content) {
+  //     setMsg("Comment cannot be empty");
+  //     return;
+  //   }
+
+  //   // TEMP DEV MODE (no authMiddleware):
+  //   if (!user?.id) {
+  //   //   setMsg("You must be logged in to comment");
+  //   //   return;
+  //       return <div style={{padding:16}}>You must be logged in to comment</div>
+  //   }
+
+  //   try {
+  //     const res = await fetch("http://localhost:5000/api/comments", {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({
+  //         postId,
+  //         content,
+  //         publisherId: user.id, // temp until authMiddleware exists
+  //       }),
+  //     });
+
+  //     const data = await res.json();
+
+  //     if (!res.ok) {
+  //       setMsg(data.message || `Error ${res.status}`);
+  //       return;
+  //     }
+
+  //     setNewComment("");
+  //     await loadPostPage();
+  //   } catch (err) {
+  //     setMsg(`Failed to add comment: ${err.message}`);
+  //   }
+  // };
+
+  const handleAddComment = async (e) => {
+  e.preventDefault();
+  setMsg("");
+
+  const content = newComment.trim();
+  if (!content) {
+    setMsg("Comment cannot be empty");
+    return;
+  }
+
+  try {
+    const res = await fetch("http://localhost:5000/api/comments", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        postId,
+        content,
+        publisherId: user.id, // כמו שיש לך עכשיו
+      }),
+    });
+
+    const data = await res.json();
+
+    if (res.status === 403 && data?.messageToUser) {
+      setMsg(data.messageToUser); // ← ההודעה היפה מה-AI
       return;
     }
 
-    // TEMP DEV MODE (no authMiddleware):
-    if (!user?.id) {
-    //   setMsg("You must be logged in to comment");
-    //   return;
-        return <div style={{padding:16}}>You must be logged in to comment</div>
+    if (!res.ok) {
+      setMsg(data?.message || `Error ${res.status}`);
+      return;
     }
 
-    try {
-      const res = await fetch("http://localhost:5000/api/comments", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          postId,
-          content,
-          publisherId: user.id, // temp until authMiddleware exists
-        }),
-      });
+    // הצלחה
+    setNewComment("");
+    // await loadPostPage(); // או להוסיף לרשימה מקומית
+    const createdComment = data.comment || data;
+    setComments((prev) => [createdComment, ...prev]);
+    } catch {
+      setMsg("Failed to add comment. Please try again.");
+    }};
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        setMsg(data.message || `Error ${res.status}`);
-        return;
-      }
-
-      setNewComment("");
-      await loadPostPage();
-    } catch (err) {
-      setMsg(`Failed to add comment: ${err.message}`);
-    }
-  };
 
   if (loading) return <div style={{ padding: 16 }}>Loading...</div>;
   if (!post) return <div style={{ padding: 16 }}>{msg || "Post not found"}</div>;
