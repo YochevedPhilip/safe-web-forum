@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext.jsx";
 
 const HomePageDemo = () => {
   const navigate = useNavigate();
@@ -9,7 +11,8 @@ const HomePageDemo = () => {
   const [error, setError] = useState(null);
   const API_BASE_URL = import.meta.env.VITE_SERVER_API_URL;
 
-  const username = JSON.parse(localStorage.getItem("user")).username;
+  const { user } = useContext(AuthContext);
+  const username = user?.username;
 
   useEffect(() => {
     let isMounted = true;
@@ -48,7 +51,7 @@ const HomePageDemo = () => {
     };
   }, []);
 
-  if (loading) return <p style={{ padding: 20 }}>Loading topics...</p>;
+  if (loading) return <p style={{ padding: 20 }}>טוען נושאים...</p>;
   if (error) return <p style={{ padding: 20 }}>Error: {error}</p>;
 
   return (
@@ -66,10 +69,10 @@ const HomePageDemo = () => {
             fontWeight: 700,
           }}
         >
-          {String(username).charAt(0).toUpperCase()}
+          {username ? username.charAt(0).toUpperCase() : "?"}
         </div>
 
-        <h2 style={{ margin: 0 }}>שלום, {username}!</h2>
+        {username && <h2 style={{ margin: 0 }}>שלום, {username}!</h2>}
       </div>
 
       <h3 style={{ marginTop: 0 }}>נושאים חמים</h3>
