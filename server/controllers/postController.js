@@ -5,7 +5,8 @@ import { postService } from "../services/postService.js"; // אם צריך פו�
 export const postController = {
   async createPost(req, res) {
     try {
-      const { publisherId, topicId, content, title, anonymous } = req.body;
+      const {  topicId, content, title, anonymous } = req.body;
+      const publisherId = req.user?.userId;
 
       if (!title || title.length < 3)
         return res.status(400).json({ error: "Title is too short" });

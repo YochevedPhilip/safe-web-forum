@@ -7,6 +7,8 @@ export const postsService = {
 
     return api.get(`/api/posts/topics/${topicId}/posts`, {
       params: { page, limit },
+            headers: token ? { Authorization: `Bearer ${token}` } : {},
+
     });
   },
 };

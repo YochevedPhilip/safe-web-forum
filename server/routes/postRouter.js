@@ -1,12 +1,13 @@
 import { Router } from "express";
 import { postController } from "../controllers/postController.js";
+import { requireAuth } from "../middlewares/authMiddleware.js";
 
 const postRouter = Router();
 
 // GET
 postRouter.get("/", postController.getAllPosts); 
-postRouter.get("/topics/:topicId/posts", postController.getPostsByTopic); 
+postRouter.get("/topics/:topicId/posts",requireAuth, postController.getPostsByTopic); 
 // POST
- postRouter.post("/", postController.createPost);
+ postRouter.post("/",requireAuth, postController.createPost);
 
 export default postRouter;
