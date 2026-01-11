@@ -1,51 +1,54 @@
 import PropTypes from "prop-types";
 
-
 export default function PostCard({ post, onOpen, onToggleLike }) {
   const postId = String(post.id ?? post._id);
 
   return (
     <div
+      className="post-card" // משתמש בעיצוב היוקרתי מה-CSS
       onClick={() => onOpen(postId)}
-      style={{
-        border: "1px solid #ccc",
-        borderRadius: "8px",
-        padding: "12px",
-        marginBottom: "12px",
-        cursor: "pointer",
-      }}
     >
-      <h3>{post.title}</h3>
-      <p>{post.content}</p>
+      <div className="post-header">
+        <h3 className="post-title">{post.title}</h3>
+      </div>
 
-      <small>
-        By {post.author ?? "Anonymous"} ·{" "}
-        {post.date ? new Date(post.date).toLocaleDateString() : ""}
-      </small>
+      <p className="post-content">{post.content}</p>
 
-      <div style={{ marginTop: 8, display: "flex", gap: 16 }}>
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            onToggleLike(post);
-          }}
-          style={{
-            border: "none",
-            background: "transparent",
-            cursor: "pointer",
-            padding: 0,
-          }}
-        >
-          {post._localLiked ? "❤️" : "🤍"} {post.likes}
-        </button>
+      <div style={{ marginBottom: '15px' }}>
+        <small className="post-author">
+          פורסם על ידי {post.author ?? "אנונימי"} ·{" "}
+          {post.date ? new Date(post.date).toLocaleDateString('he-IL') : ""}
+        </small>
+      </div>
 
-        <span>💬 {post.comments ?? 0}</span>
+      <div className="post-footer">
+        <div style={{ display: "flex", gap: "20px" }}>
+          {/* כפתור לייק */}
+          <button
+            type="button"
+            className={`like-section ${post._localLiked ? 'liked' : ''}`}
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleLike(post);
+            }}
+            style={{ border: "none", background: "transparent", cursor: "pointer", padding: 0 }}
+          >
+            <span style={{ fontSize: '1.2rem' }}>{post._localLiked ? "❤️" : "🤍"}</span>
+            <span style={{ marginRight: '5px' }}>{post.likes}</span>
+          </button>
+
+          {/* תגובות */}
+          <div className="like-section" style={{ cursor: 'default' }}>
+            <span style={{ fontSize: '1.1rem' }}>💬</span>
+            <span style={{ marginRight: '5px' }}>{post.comments ?? 0}</span>
+          </div>
+        </div>
       </div>
     </div>
   );
 }
 
+// PropTypes נשארים ללא שינוי בכלל
 PostCard.propTypes = {
   onOpen: PropTypes.func.isRequired,
   onToggleLike: PropTypes.func.isRequired,

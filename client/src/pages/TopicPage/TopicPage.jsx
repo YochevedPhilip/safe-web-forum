@@ -8,20 +8,19 @@ import { likesService } from "../../services/likesService";
 
 const LIMIT = 10;
 
-const TopicPage = () => {
+const TopicPage = ({ searchQuery }) => { // <--- קבלת החיפוש כאן
   const { topicId } = useParams();
   const navigate = useNavigate();
 
   const [topicTitle, setTopicTitle] = useState("");
   const [posts, setPosts] = useState([]);
-
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-
-  const [loading, setLoading] = useState(true); // טעינה ראשונית
-  const [loadingMore, setLoadingMore] = useState(false); // טעינה של "עוד"
+  const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState(null);
 
+  // --- לוגיקה מקורית (Fetch ו-Normalize) ---
   const normalizePosts = (list) =>
     (Array.isArray(list) ? list : []).map((p) => ({
       ...p,
@@ -32,7 +31,6 @@ const TopicPage = () => {
   const fetchPostsPage = async (nextPage, { replace = false } = {}) => {
     const res = await postsService.getTopicPosts(topicId, nextPage, LIMIT);
     const list = normalizePosts(res.data);
-
     setPosts((prev) => (replace ? list : [...prev, ...list]));
     setPage(nextPage);
     setHasMore(list.length === LIMIT);
@@ -40,24 +38,18 @@ const TopicPage = () => {
 
   useEffect(() => {
     let isMounted = true;
-
     const fetchTopicAndFirstPage = async () => {
       try {
         setLoading(true);
         setError(null);
-
-        // reset
         setPosts([]);
         setPage(1);
         setHasMore(true);
-
         const topicRes = await topicsService.getTopic(topicId);
         const topicData = topicRes.data;
         const title = topicData?.title ?? topicData?.topic?.title ?? "";
-
         if (!isMounted) return;
         setTopicTitle(title);
-
         await fetchPostsPage(1, { replace: true });
       } catch (err) {
         if (!isMounted) return;
@@ -66,19 +58,44 @@ const TopicPage = () => {
         if (isMounted) setLoading(false);
       }
     };
-
     fetchTopicAndFirstPage();
-    return () => {
-      isMounted = false;
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    return () => { isMounted = false; };
   }, [topicId]);
+
+  // --- פונקציית הלייק (ללא שינוי לוגי) ---
+  const toggleLike = async (post) => {
+    const postId = String(post.id ?? post._id);
+    const wasLiked = Boolean(post._localLiked);
+    setPosts((prev) =>
+      prev.map((p) => {
+        const pid = String(p.id ?? p._id);
+        if (pid !== postId) return p;
+        return {
+          ...p,
+          _localLiked: !wasLiked,
+          likes: Math.max(0, (p.likes ?? 0) + (wasLiked ? -1 : 1)),
+        };
+      })
+    );
+    try {
+      if (wasLiked) { await likesService.unlikePost(postId); } 
+      else { await likesService.likePost(postId); }
+    } catch (err) {
+      setPosts((prev) =>
+        prev.map((p) => {
+          const pid = String(p.id ?? p._id);
+          if (pid !== postId) return p;
+          return { ...p, _localLiked: wasLiked, likes: Math.max(0, (p.likes ?? 0) + (wasLiked ? 1 : -1)) };
+        })
+      );
+      setError(err?.message || "Failed to toggle like");
+    }
+  };
 
   const loadMore = async () => {
     if (loadingMore || loading || !hasMore) return;
     try {
       setLoadingMore(true);
-      setError(null);
       await fetchPostsPage(page + 1);
     } catch (err) {
       setError(err?.message || "Something went wrong");
@@ -87,86 +104,53 @@ const TopicPage = () => {
     }
   };
 
-  // ⭐ TOGGLE LIKE (Post)
-  const toggleLike = async (post) => {
-    const postId = String(post.id ?? post._id);
-    const wasLiked = Boolean(post._localLiked);
-
-    // optimistic UI
-    setPosts((prev) =>
-      prev.map((p) => {
-        const pid = String(p.id ?? p._id);
-        if (pid !== postId) return p;
-
-        return {
-          ...p,
-          _localLiked: !wasLiked,
-          likes: Math.max(0, (p.likes ?? 0) + (wasLiked ? -1 : 1)),
-        };
-      })
+  // --- לוגיקת הסינון החדשה ---
+  const filteredPosts = posts.filter((post) => {
+    if (!searchQuery) return true;
+    const query = searchQuery.toLowerCase();
+    return (
+      post.title?.toLowerCase().includes(query) ||
+      post.content?.toLowerCase().includes(query)
     );
+  });
 
-    try {
-      if (wasLiked) {
-        await likesService.unlikePost(postId);
-      } else {
-        await likesService.likePost(postId);
-      }
-    } catch (err) {
-      // rollback
-      setPosts((prev) =>
-        prev.map((p) => {
-          const pid = String(p.id ?? p._id);
-          if (pid !== postId) return p;
-
-          return {
-            ...p,
-            _localLiked: wasLiked,
-            likes: Math.max(0, (p.likes ?? 0) + (wasLiked ? 1 : -1)),
-          };
-        })
-      );
-
-      setError(err?.message || "Failed to toggle like");
-    }
-  };
-
-  if (loading) return <p>Loading posts...</p>;
-  if (error) return <p>Error: {error}</p>;
+  // --- רנדור (JSX) ---
+  if (loading) return <div className="mainContainer"><div className="loading-state">טוען פוסטים...</div></div>;
+  if (error) return <div className="mainContainer"><div className="message-card"><h2>אופס!</h2><p>{error}</p></div></div>;
 
   return (
-    <div style={{ padding: "20px", paddingBottom: "140px" }}>
-      <h1>{topicTitle || "Topic"}</h1>
+    <div className="mainContainer page-bottom-padding">
+      <div className="page-header">
+        <h1 className="page-title">{topicTitle || "נושא"}</h1>
+        <button className="btn-pink btn-small" onClick={() => navigate(`/topics/${topicId}/create-post`)}>
+          + פוסט חדש
+        </button>
+      </div>
 
-      <button
-        onClick={() => navigate(`/topics/${topicId}/create-post`)}
-        style={{ marginBottom: "20px" }}
-      >
-        + Create Post
-      </button>
-
-      {posts.length === 0 ? (
-        <p>No posts yet</p>
+      {filteredPosts.length === 0 ? (
+        <div className="message-card">
+          <p>{searchQuery ? `לא נמצאו פוסטים שתואמים ל-"${searchQuery}"` : "עדיין אין פוסטים בנושא זה."}</p>
+        </div>
       ) : (
         <>
-          {posts.map((post) => (
-            <PostCard
-              key={String(post.id ?? post._id)}
-              post={post}
-              onOpen={(id) => navigate(`/posts/${id}`)}
-              onToggleLike={toggleLike}
-            />
-          ))}
-
-          <div style={{ marginTop: 16 }}>
-            {hasMore ? (
-              <button onClick={loadMore} disabled={loadingMore}>
-                {loadingMore ? "Loading..." : "Load more"}
-              </button>
-            ) : (
-              <p style={{ opacity: 0.7 }}>No more posts</p>
-            )}
+          <div className="posts-stack">
+            {filteredPosts.map((post) => (
+              <PostCard
+                key={String(post.id ?? post._id)}
+                post={post}
+                onOpen={(id) => navigate(`/posts/${id}`)}
+                onToggleLike={toggleLike}
+              />
+            ))}
           </div>
+
+          {!searchQuery && hasMore && (
+            <div className="load-more-wrapper">
+              <button className="btn-mint" onClick={loadMore} disabled={loadingMore}>
+                {loadingMore ? "טוען עוד..." : "טען פוסטים נוספים"}
+              </button>
+            </div>
+          )}
         </>
       )}
     </div>

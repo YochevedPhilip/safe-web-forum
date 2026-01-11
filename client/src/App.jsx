@@ -55,6 +55,7 @@ function App() {
         {/* Main - משתמש ב-Module */}
         <main className={styles.main}>
           <Routes>
+          <Route path="/topics/:topicId" element={<TopicPage searchQuery={searchQuery} />} />
             <Route path="/" element={<Home searchQuery={searchQuery} />} /> 
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />

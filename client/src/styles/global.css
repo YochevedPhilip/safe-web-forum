@@ -356,3 +356,181 @@ a {
   transform: scale(1.05);
   filter: brightness(1.05);
 }
+/* פס טעינה גלובלי */
+.progress-container {
+  height: 8px;
+  background-color: #eee;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: var(--mint-soft);
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  text-align: center;
+  font-size: 0.8rem;
+  margin-top: 5px;
+  color: var(--luxury-dark);
+}.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  gap: 20px;
+}
+
+.page-title {
+  color: var(--luxury-dark);
+  font-size: 2rem;
+  margin: 0;
+}
+
+.btn-create-post {
+  background-color: var(--mint-soft); /* צבע מנטה ליצירה חדשה */
+  color: white;
+  padding: 10px 20px;
+  border-radius: 20px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.btn-create-post:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.05);
+}
+
+.load-more-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+}/* ריווח תחתון גלובלי לעמודים עם פוטר צף */
+.page-bottom-padding {
+  padding-bottom: 140px;
+}
+
+/* סידור כותרת העמוד */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+/* כפתור ורוד קטן יותר */
+.btn-small {
+  width: auto !important;
+  padding: 10px 25px !important;
+}
+
+/* ערימת פוסטים */
+.posts-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* אזור כפתור "טען עוד" */
+.load-more-wrapper {
+  text-align: center;
+  margin-top: 40px;
+}
+
+/* כפתור מנטה */
+.btn-mint {
+  background-color: var(--mint-soft);
+  color: white;
+  border: none;
+  border-radius: 30px;
+  padding: 12px 40px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.no-more-msg {
+  opacity: 0.6;
+  font-size: 0.9rem;
+}
+/* --- רשימת פוסטים וסידור העמוד (תיקון) --- */
+
+/* הגבלת רוחב לרשימת הפוסטים כדי שלא ימתחו מדי */
+.posts-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 800px; /* רוחב אופטימלי לקריאה */
+  margin: 0 auto;   /* ממרכז את כל הרשימה */
+}
+
+/* כרטיס הפוסט עצמו */
+.post-card {
+  background: #ffffff;
+  border-radius: var(--card-radius);
+  padding: 24px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+  border: 1px solid #f0f0f0;
+  transition: var(--transition-smooth);
+  cursor: pointer;
+  width: 100%;
+  text-align: right; /* יישור טקסט לימין לעברית */
+}
+
+.post-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+  border-color: var(--peach-soft);
+}
+
+.post-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--luxury-dark);
+  margin-bottom: 10px;
+}
+
+.post-content {
+  color: #555;
+  line-height: 1.6;
+  font-size: 1rem;
+  margin-bottom: 18px;
+  /* חיתוך טקסט ל-3 שורות */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.post-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 15px;
+  border-top: 1px solid #f9f9f9;
+}
+
+/* סקציית הלייקים בתוך הכרטיס */
+.like-section {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: #888;
+  transition: color 0.3s;
+}
+
+.like-section.liked {
+  color: var(--peach-soft);
+}
+
+.post-author {
+  font-size: 0.85rem;
+  color: #999;
+  font-weight: 500;
+}

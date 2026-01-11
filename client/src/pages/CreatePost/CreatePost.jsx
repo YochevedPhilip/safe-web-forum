@@ -106,20 +106,13 @@ const CreatePost = () => {
         </div>
 
         {loading && (
-          <div style={{ marginBottom: "20px" }}>
-            <div style={{ height: '8px', background: '#eee', borderRadius: '10px', overflow: 'hidden' }}>
-              <div 
-                style={{ 
-                  width: `${progress}%`, 
-                  height: '100%', 
-                  background: 'var(--mint-soft)', 
-                  transition: 'width 0.3s' 
-                }} 
-              />
-            </div>
-            <p style={{ textAlign: "center", fontSize: "0.8rem", marginTop: "5px" }}>טוען... {progress}%</p>
-          </div>
-        )}
+  <div className="progress-wrapper">
+    <div className="progress-container">
+      <div className="progress-bar" style={{ width: `${progress}%` }} />
+    </div>
+    <p className="progress-text">טוען... {progress}%</p>
+  </div>
+)}
 
         <button
           className="btn-pink"
