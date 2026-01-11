@@ -4,7 +4,7 @@ import { BrowserRouter, Routes, Route, Link, useNavigate, useLocation, Navigate 
 import Home from "./pages/HomePage.jsx";
 import Login from "./pages/LoginPage";
 import Register from "./pages/RegisterPage";
-import TopicPage from "./pages/TopicPage/TopicPage.jsx";
+import TopicPage from "./pages/TopicPage.jsx";
 import CreatePost from "./pages/CreatePost/CreatePost.jsx";
 import PostPublished from "./pages/CreatePost/PostPublished.jsx";
 import ErrorPost from "./pages/CreatePost/ErrorPost.jsx";
