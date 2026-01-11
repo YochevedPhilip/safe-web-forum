@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useContext } from "react";
 import { BrowserRouter, Routes, Route, Link, useNavigate, useLocation, Navigate } from "react-router-dom";
 
 import Home from "./pages/HomePage.jsx";
@@ -8,6 +8,7 @@ import TopicPage from "./pages/TopicPage.jsx";
 import CreatePost from "./pages/CreatePost/CreatePost.jsx";
 import PostPublished from "./pages/CreatePost/PostPublished.jsx";
 import ErrorPost from "./pages/CreatePost/ErrorPost.jsx";
+import PostPage from "./pages/PostPage.jsx";
 
 import styles from "./styles/App.module.css";
 import "./styles/global.css";
@@ -67,6 +68,8 @@ function AppLayout() {
           <Route path="/topics/:topicId/create-post" element={<CreatePost />} />
           <Route path="/post-published" element={<PostPublished />} />
           <Route path="/error" element={<ErrorPost />} />
+          <Route path="/posts/:postId" element={<PostPage />} />
+          <Route path="/comments" element={<PostPage />} />
         </Routes>
       </main>
 

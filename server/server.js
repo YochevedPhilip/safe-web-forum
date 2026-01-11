@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 dotenv.config();
 import express from "express";
 
+import commentRouter from "./routes/commentRoute.js";
 import { connectDB } from "./data/db.js";
 import { seedTopicsIfEmpty } from "./seeds/seedTopics.js";
 
@@ -49,6 +50,7 @@ app.use(express.json());
 app.use("/login", loginRoutes);
 app.use("/register", registerRoutes);
 app.use("/api/topics", topicRoutes);
+app.use("/api/comments", commentRouter);
 app.use("/api/posts", postRouter);
 app.use("/api/likes", likeRoutes);
 const PORT = process.env.PORT;
