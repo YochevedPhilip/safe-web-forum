@@ -1,13 +1,276 @@
-body {
-    margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-      background-color: #FFDCE8;
+/* --- משתנים גלובליים --- */
+:root {
+  --mint-soft: #76c893;
+  --peach-soft: #ff9a8b;
+  --luxury-dark: #53474F;
+  --bg-pink-pale: #fff5f8;
+  --card-radius: 24px;
+  --transition-smooth: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
 
-  }
-  
-  code {
-    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
-  }
-  
+/* איפוס בסיסי */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--bg-pink-pale);
+  color: var(--luxury-dark);
+  direction: rtl;
+  text-align: right;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+a {
+  text-decoration: none;
+}
+
+/* --- Header & Nav --- */
+.appHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 60px;
+  direction: ltr; /* הלוגו נשאר בשמאל */
+  background: linear-gradient(135deg, rgba(118,200,147,0.85), rgba(255,154,139,0.8));
+  border-radius: 0 0 50px 50px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.appLogo {
+  height: 120px;
+  width: auto;
+  object-fit: contain;
+  background: transparent;
+  mix-blend-mode: multiply;
+}
+
+.appNav {
+  display: flex;
+  gap: 30px;
+  align-items: center;
+  direction: rtl; /* מחזיר עברית לסדר הנכון */
+}
+
+.appLink {
+  position: relative;
+  color: white;
+  font-size: 1.1em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.appLink::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -5px;
+  right: 0;
+  background-color: white;
+  transition: width 0.3s ease;
+}
+
+.appLink:hover::after {
+  width: 100%;
+}
+
+.appLink:hover {
+  opacity: 0.8;
+}
+
+/* Avatar בצד ה־Nav */
+.avatar {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background-color: #5fb3c1;
+  color: white;
+  display: grid;
+  place-items: center;
+  font-weight: bold;
+  font-size: 1.2rem;
+  border: 2px solid white;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* --- Main & Grid --- */
+.mainContainer {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 50px 20px 120px;
+}
+
+.topicsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 25px;
+}
+
+/* --- Post Cards --- */
+.topicCard, .post-card {
+  position: relative;
+  border-radius: var(--card-radius);
+  overflow: hidden;
+  cursor: pointer;
+  background-color: white;
+  transition: var(--transition-smooth);
+  border: 1px solid rgba(0,0,0,0.03);
+}
+
+.topicCard:hover, .post-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+  border-color: var(--peach-soft);
+}
+
+.topicCard img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1s ease;
+}
+
+.topicCard:hover img {
+  transform: scale(1.1);
+}
+
+.topicOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.3) 0%, transparent 60%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 30px;
+  transition: var(--transition-smooth);
+}
+
+.topicCard:hover .topicOverlay {
+  background: linear-gradient(135deg, rgba(118,200,147,0.85), rgba(255,154,139,0.8));
+}
+
+.topicTitle, .post-title {
+  color: white;
+  font-size: 1.6rem;
+  font-weight: 700;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  margin: 0;
+}
+
+.joinIndicator {
+  color: white;
+  font-size: 0.85rem;
+  margin-top: 8px;
+  font-weight: 400;
+  opacity: 0;
+  transform: translateX(10px);
+  transition: var(--transition-smooth);
+}
+
+.topicCard:hover .joinIndicator {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.post-content {
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* Safari/Chrome */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+
+  display: box;
+  line-clamp: 3; /* סטנדרטי לעתיד */
+  box-orient: vertical;
+}
+
+
+.post-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 15px;
+  border-top: 1px solid #f9f9f9;
+}
+
+/* --- Footer --- */
+.footer {
+  padding: 30px 20px;
+  background-color: var(--peach-soft);
+  color: white;
+  text-align: center;
+  margin-top: 50px;
+  width: 100%;
+  border-radius: 50px 50px 0 0;
+  box-shadow: 0 -4px 15px rgba(0,0,0,0.05);
+}
+
+.footer p {
+  margin: 0;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+/* --- Forms & Buttons --- */
+.form-card {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 30px;
+  background-color: white;
+  border-radius: var(--card-radius);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+}
+
+.form-control {
+  width: 100%;
+  padding: 12px 15px;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+.form-control:focus {
+  border-color: var(--mint-soft);
+  outline: none;
+}
+
+.btn-pink, .button-primary, .btn-create-post, .btn-mint, .btn-back, .btn-small {
+  border-radius: 30px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.btn-pink {
+  width: 100%;
+  padding: 15px;
+  background-color: var(--peach-soft);
+  color: white;
+  border: none;
+  font-size: 1.1rem;
+}
+
+.btn-pink:hover:not(:disabled) {
+  filter: brightness(1.05);
+  transform: translateY(-2px);
+}
+
+.btn-pink:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
