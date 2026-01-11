@@ -147,11 +147,22 @@ a {
 
 /* --- Footer --- */
 .footer {
-  padding: 20px;
-  background-color: var(--luxury-dark);
+  padding: 30px 20px;
+  /* שימוש במשתנה הוורוד-אפרסק שהגדרת ב-root */
+  background-color: var(--peach-soft); 
   color: white;
   text-align: center;
   margin-top: 50px;
+  width: 100%;
+  /* הוספת קימור למעלה כדי שיתאים לסגנון של ה-Header */
+  border-radius: 50px 50px 0 0; 
+  box-shadow: 0 -4px 15px rgba(0,0,0,0.05);
+}
+
+.footer p {
+  margin: 0;
+  font-weight: 600;
+  letter-spacing: 1px;
 }
 /* מכולת החיפוש */
 .searchContainer {
