@@ -18,7 +18,7 @@ const TopicPage = () => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
 
-  const [loading, setLoading] = useState(true); 
+  const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState(null);
 
