@@ -72,7 +72,7 @@ function AppLayout() {
 
       {/* Footer */}
       <footer className="footer">
-        <p>&copy; 2024 SafeTalk</p>
+        <p>&copy; 2026 SafeTalk</p>
       </footer>
     </div>
   );
