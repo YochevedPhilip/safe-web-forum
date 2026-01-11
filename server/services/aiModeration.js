@@ -21,15 +21,16 @@ Analyze this post and respond ONLY in valid JSON format with no extra text.
 Post title: "${title}"
 Post content: "${content}"
 
+Rules for "messageToUser" (Must be in HEBREW):
+1. If riskLevel is LOW: Write a short, positive message like "איזה כיף, הפוסט שלך פורסם!".
+2. If riskLevel is MEDIUM: Write a warm, supportive message in Hebrew. Explain that the post was flagged as sensitive because it might express distress or sadness. Tell them they are not alone and it's okay to share, but suggest reaching out to a friend or a hotline if they feel overwhelmed.
+3. If riskLevel is HIGH: Explain clearly (and kindly) that the post violates community rules (violence/harm) and cannot be published. Include support resources like Eran (1201).
 Return JSON like this:
 {
-  "safeToPublish": true | false,
+  "safeToPublish": Boolean,
   "riskLevel": "LOW" | "MEDIUM" | "HIGH",
   "categories": [],
-  "messageToUser": "Write a warm, clear message in Hebrew explaining to the user why the post cannot be published, including: 
-  1. A clear explanation of why the post was rejected.
-  2. Instructions to update the post and try again.
-  3. If the content indicates distress (like suicidal thoughts), include resources and support links."
+  "messageToUser": "..." 
 }
 `;
 

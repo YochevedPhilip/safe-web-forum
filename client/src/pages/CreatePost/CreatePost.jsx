@@ -63,9 +63,16 @@ const CreatePost = () => {
       setTimeout(() => {
         if (res.status === 201) {
           navigate("/post-published", {
-            state: { title, text, anonymous: isAnonymous },
+            state: { 
+              title, 
+              text, 
+              anonymous: isAnonymous,
+              aiMessage: data.aiMessage // העברת הודעת ה-AI
+            },
           });
         } else {
+          // כאן אנחנו מוודאים שהמשתמש יראה הודעה משמעותית
+          const errorMessage = data.messageToUser || data.error || "משהו השתבש, כדאי לנסות שוב";
           navigate("/error", {
             state: { message: data.messageToUser || "שגיאה בפרסום הפוסט" },
           });
