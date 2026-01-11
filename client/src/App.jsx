@@ -69,7 +69,8 @@ function AppLayout() {
           <Route path="/post-published" element={<PostPublished />} />
           <Route path="/error" element={<ErrorPost />} />
           <Route path="/posts/:postId" element={<PostPage />} />
-          <Route path="/comments" element={<PostPage />} />
+          <Route path="/posts/:postId/comments" element={<PostPage />} />
+
         </Routes>
       </main>
 
