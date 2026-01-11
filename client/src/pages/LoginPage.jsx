@@ -1,6 +1,8 @@
 //import styles from './Home.module.css';
-import {useState} from "react";
-import {Link, useNavigate} from "react-router"
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
 //import { useNavigate } from "react-router-dom";
 
 
@@ -10,19 +12,22 @@ const Login = () => {
   const [email, setEmail] = useState("");  //use email for login
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const { setUser } = useContext(AuthContext);
+
   const API_BASE_URL = import.meta.env.VITE_SERVER_API_URL;
 
 
-  const handleSubmit = async(e) => {e.preventDefault();
-    try{
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
       const res = await fetch(`${API_BASE_URL}/login`, {
         method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({email, password}),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
       });
 
-      const data= await res.json() //expecting {token, user} or {message}
-      if(!res.ok) {
+      const data = await res.json() //expecting {token, user} or {message}
+      if (!res.ok) {
         setMsg(data.message || 'status: ${res.status}');
         return;
       }
@@ -30,10 +35,12 @@ const Login = () => {
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
       setMsg('Welcome back ${data.user.username}!');
+      setUser(data.user);
+
 
       //move to homepage after login
       navigate("/");
-    }catch(err) {
+    } catch (err) {
       setMsg("error: " + err.message);
     }
   };
@@ -41,15 +48,15 @@ const Login = () => {
   return (
     // <div>
     <form onSubmit={handleSubmit}>
-        <h1>Login to your account or create a new one!</h1>
-        <input placeholder="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-        <br />
-        <input placeholder="password" type="password" value={password} onChange= {(e) => setPassword(e.target.value)} />
-        <br />
-        <button type="submit">Submit</button>
-        <br />
-        <Link to="/register">register</Link>
-        <p>{msg}</p>
+      <h1>Login to your account or create a new one!</h1>
+      <input placeholder="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+      <br />
+      <input placeholder="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+      <br />
+      <button type="submit">Submit</button>
+      <br />
+      <Link to="/register">register</Link>
+      <p>{msg}</p>
     </form>
     // </div>
   );
