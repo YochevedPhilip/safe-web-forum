@@ -1,4 +1,5 @@
 import PropTypes from "prop-types";
+import LikeButton from "./likeButton.jsx";
 
 export default function PostCard({ post, onOpen, onToggleLike }) {
   const postId = String(post.id ?? post._id);
@@ -26,18 +27,12 @@ export default function PostCard({ post, onOpen, onToggleLike }) {
       {/* Footer: לייקים ותגובות */}
       <div className="post-footer">
         <div style={{ display: "flex", gap: "20px" }}>
-          <button
-            type="button"
-            className={`like-section ${post._localLiked ? 'liked' : ''}`}
-            onClick={(e) => {
-              e.stopPropagation();
-              onToggleLike(post);
-            }}
-            style={{ border: "none", background: "transparent", cursor: "pointer", padding: 0 }}
-          >
-            <span style={{ fontSize: '1.2rem' }}>{post._localLiked ? "❤️" : "🤍"}</span>
-            <span style={{ marginRight: '5px' }}>{post.likes}</span>
-          </button>
+          <LikeButton
+            postId={String(post.id ?? post._id)}
+            liked={post._localLiked}
+            likes={post.likes}
+            onChange={({ liked, likes }) => onToggleLike(post, liked, likes)}
+          />
 
           <div className="like-section" style={{ cursor: 'default' }}>
             <span style={{ fontSize: '1.1rem' }}>💬</span>

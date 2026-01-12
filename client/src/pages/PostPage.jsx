@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import LikeButton from "../components/likeButton.jsx";
+import { postsService } from "../services/postsService.js";
+
 
 export default function PostPage() {
   const { postId } = useParams();
@@ -12,26 +15,34 @@ export default function PostPage() {
 
   const storedUser = localStorage.getItem("user");
   const user = storedUser ? JSON.parse(storedUser) : null;
+  
 
   const loadPostPage = async () => {
     setLoading(true);
     setMsg("");
 
     try {
-      const res = await fetch(
-        `http://localhost:5000/api/posts/${postId}?limit=10`
-      );
+      // use postsService (axios) so token is injected consistently
+      const res = await postsService.getPost(postId, 10);
+      const data = res.data;
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        setMsg(data.message || `Error ${res.status}`);
+      // handle errors from server
+      if (!res || res.status >= 400) {
+        setMsg(data?.message || `Error ${res?.status}`);
         setPost(null);
         setComments([]);
         return;
       }
 
-      setPost(data.post);
+      // ✅ normalize for LikeButton usage
+      const p = data.post;
+      setPost({
+        ...p,
+        likes: p?.likes ?? p?.stats?.likeCount ?? p?.stats?.like_count ?? 0,
+        _localLiked: Boolean(p?.likedByMe ?? p?._localLiked ?? p?.liked ?? data?.likedByMe),
+
+      });
+
       setComments(data.comments || []);
     } catch (err) {
       setMsg(`Failed to load post: ${err.message}`);
@@ -59,9 +70,9 @@ export default function PostPage() {
 
     // TEMP DEV MODE (no authMiddleware):
     if (!user?.id) {
-    //   setMsg("You must be logged in to comment");
-    //   return;
-        return <div style={{padding:16}}>You must be logged in to comment</div>
+      // setMsg("You must be logged in to comment");
+      // return;
+      return <div style={{ padding: 16 }}>You must be logged in to comment</div>;
     }
 
     try {
@@ -95,6 +106,23 @@ export default function PostPage() {
   return (
     <div style={{ maxWidth: 800, margin: "0 auto", padding: 16 }}>
       <h2 style={{ marginBottom: 6 }}>{post.title || "Post"}</h2>
+
+      {/* ✅ Like button */}
+      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+        <LikeButton
+          postId={String(post._id ?? post.id)}
+          liked={post._localLiked}
+          likes={post.likes}
+          onChange={({ liked, likes }) =>
+            setPost((prev) => ({
+              ...prev,
+              _localLiked: liked,
+              likes,
+            }))
+          }
+          onError={(err) => setMsg(err?.message || "Failed to toggle like")}
+        />
+      </div>
 
       <p style={{ whiteSpace: "pre-wrap" }}>{post.content}</p>
 

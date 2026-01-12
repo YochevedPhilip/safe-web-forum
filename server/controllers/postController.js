@@ -95,35 +95,18 @@ export const postController = {
     }
   },
 
-  async getPostPage(req, res) {
-    const { postId } = req.params;
-    const limit = Math.min(Number(req.query.limit || 10), 50);
+  async getPostById(req, res, next) {
+    try {
+      const { postId } = req.params;
+      const limit = req.query.limit;
+      const userId = req.user?.userId; 
 
-    if (!mongoose.isValidObjectId(postId)) {
-      return res.status(400).json({ message: "Invalid postId" });
+      const data = await postService.getPostById(postId, { limit, userId });
+
+      res.status(200).json(data);
+    } catch (err) {
+      next(err);
     }
-
-    const post = await Post.findOne({
-      _id: postId,
-      deletedAt: null,
-      blockedAt: null,
-      publishedAt: { $ne: null },
-    }).populate("publisherId", "username");
-
-    if (!post) return res.status(404).json({ message: "Post not found" });
-
-    const comments = await Comment.find({
-      postId,
-      parentCommentId: null,
-      deletedAt: null,
-      blockedAt: null,
-      publishedAt: { $ne: null },
-    })
-      .sort({ createdAt: -1 })
-      .limit(limit)
-      .populate("publisherId", "username");
-
-    return res.json({ post, comments });
   },
 
 };

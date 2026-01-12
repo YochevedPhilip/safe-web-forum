@@ -1,6 +1,7 @@
 import {postRepository} from '../repositories/postRepository.js';
 import {topicRepository} from '../repositories/topicRepository.js';
 import { likeRepository } from "../repositories/likeRepository.js";
+import { commentRepository } from "../repositories/commentRepository.js";
 
 import mongoose from 'mongoose';
 import { AppError } from "../errors/appError.js";
@@ -67,6 +68,27 @@ export const postService = {
     const skip = (safePage - 1) * safeLimit;
 
     return await postRepository.findAllSortedByCreatedAt(safeLimit, skip);
-  }
+  },
 
-};
+
+
+  async getPostById(postId, { limit = 10, userId } = {}) {
+    if (!mongoose.isValidObjectId(postId)) throw new AppError("Invalid postId", 400);
+
+    const safeLimit = Math.min(Math.max(Number(limit) || 10, 1), 50);
+
+    const post = await postRepository.findById(postId);
+    if (!post) throw new AppError("Post not found", 404);
+
+    const likedByMe = userId
+      ? await likeRepository.existsByUserAndTarget(userId, "post", postId)
+      : false;
+
+    const comments = await commentRepository.findTopLevelByPostId(postId, safeLimit);
+
+    return {
+      post: { ...post, likedByMe },
+      comments,
+    };
+    }, 
+  };

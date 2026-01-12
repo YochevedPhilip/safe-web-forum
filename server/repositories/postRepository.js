@@ -6,10 +6,7 @@ export const createPost = async (data) => {
   return await newPost.save();
 };
 
-export const getPosts = async (filter = {}) => {
-  return await Post.find(filter).sort({ createdAt: -1 });
-};
-
+0
 export const getPostById = async (id) => {
   return await Post.findById(id);
 };
@@ -46,5 +43,17 @@ export const postRepository = {
       .select("title content createdAt publishedAt stats publisherId")
       .populate("publisherId", "username")
       .lean();
-  }
+  },
+
+
+  async findById(postId) {
+    return Post.findOne({
+      _id: postId,
+      deletedAt: null,
+      blockedAt: null,
+      publishedAt: { $ne: null },
+    })
+      .populate("publisherId", "username")
+      .lean();
+  },
 };

@@ -23,13 +23,13 @@ const CreatePost = () => {
     }
 
 
-      const token = localStorage.getItem("token");
-      console.log("token:", token);
+    const token = localStorage.getItem("token");
+    console.log("token:", token);
 
-  if (!token) {
-    navigate("/error", { state: { message: "צריך להתחבר כדי לפרסם פוסט." } });
-    return;
-  }
+    if (!token) {
+      navigate("/error", { state: { message: "צריך להתחבר כדי לפרסם פוסט." } });
+      return;
+    }
 
     setLoading(true);
     setProgress(10);
@@ -42,9 +42,10 @@ const CreatePost = () => {
 
       const res = await fetch(`${API_BASE_URL}/api/posts`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", 
-        Authorization: `Bearer ${token}`,
-      },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({
           topicId,
           title,
@@ -53,7 +54,7 @@ const CreatePost = () => {
         }),
       });
 
-     
+
 
       clearInterval(interval);
       setProgress(100);

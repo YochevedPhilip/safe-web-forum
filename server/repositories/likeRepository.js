@@ -29,6 +29,11 @@ createLike({ userId, targetType, targetId }) {
       .select({ targetId: 1, _id: 0 })
       .lean();
   },
- 
+  
+   async existsByUserAndTarget(userId, targetType, targetId) {
+    const doc = await Like.findOne({ userId, targetType, targetId }).select("_id").lean();
+    return Boolean(doc);
+  },
+
 
 };

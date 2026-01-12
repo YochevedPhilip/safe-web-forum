@@ -11,4 +11,17 @@ export const postsService = {
 
     });
   },
+    getPost(postId, limit = 10) {
+    return api.get(`/api/posts/${postId}`, { params: { limit } });
+  },
+
 };
+
+
+
+
+
+
+
+
+
