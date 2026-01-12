@@ -6,13 +6,11 @@ import Comment from "../data/commentModel.js";
 import mongoose from "mongoose";
 
 export const postController = {
-  // ========= CREATE POST (עם הגנת AI והתאמה ל-Schema) =========
   async createPost(req, res) {
     try {
       const { topicId, content, title, anonymous } = req.body;
       const publisherId = req.user?.userId;
 
-      // ולידציה בסיסית
       if (!title || title.length < 3)
         return res.status(400).json({ error: "Title is too short" });
       if (!content || content.length < 10)
@@ -20,11 +18,9 @@ export const postController = {
       if (!topicId)
         return res.status(400).json({ error: "Topic ID is required" });
 
-      // 1. בדיקה מול שירות ה-AI
       const aiResult = await checkPostContent(title, content);
       console.log("AI Analysis Result:", aiResult);
 
-      // 2. טיפול בסיכון גבוה (HIGH) - חסימה
       if (aiResult.riskLevel === "HIGH") {
         return res.status(403).json({
           messageToUser: aiResult.messageToUser,
@@ -33,12 +29,8 @@ export const postController = {
         });
       }
 
-      // 3. מיפוי רמת הסיכון לסטטוסים של ה-Schema שלך
-      // MEDIUM -> SENSITIVE (למשל 'אני עצוב')
-      // LOW -> OK
       const modStatus = aiResult.riskLevel === "MEDIUM" ? "SENSITIVE" : "OK";
       
-      // 4. יצירת הפוסט ב-Repository
       const postData = {
         publisherId,
         topicId,
@@ -48,7 +40,7 @@ export const postController = {
         publishedAt: new Date(),
         moderation: {
           status: modStatus,
-          helpFlag: aiResult.riskLevel === "MEDIUM", // סימון לעזרה בפוסטים עצובים
+          helpFlag: aiResult.riskLevel === "MEDIUM", 
           evaluatedAt: new Date(),
           reasons: Array.isArray(aiResult.categories) ? aiResult.categories : []
         }
@@ -57,15 +49,13 @@ export const postController = {
       const post = await postRepo.createPost(postData);
       console.log("Post saved successfully with status:", modStatus);
 
-// במקום res.status(201).json(post);
-// נחזיר גם את הנתונים וגם את הודעת ה-AI
+
 return res.status(201).json({
   ...post.toObject(),
   aiMessage: aiResult.messageToUser 
 });
     } catch (err) {
       console.error("Critical Error in createPost:", err);
-      // החזרת הודעה מפורטת יותר במקרה של שגיאת Mongoose (כדי למנוע 500 גנרי)
       res.status(500).json({ 
         error: "Internal Server Error", 
         message: err.message 
@@ -73,14 +63,12 @@ return res.status(201).json({
     }
   },
 
-  // ========= GET POSTS BY TOPIC (עם תמיכה בלייקים ומשתמש מחובר) =========
   async getPostsByTopic(req, res, next) {
     try {
       const { topicId } = req.params;
       const { page, limit } = req.query;
       const userId = req.user?.userId;
 
-      // קריאה לשירות שמביא את הפוסטים (כולל בדיקה אם המשתמש עשה לייק)
       const posts = await postService.getPostsByTopic(topicId, { page, limit, userId });
       
       const items = posts.map((p) => ({
@@ -101,7 +89,6 @@ return res.status(201).json({
     }
   },
 
-  // ========= GET ALL POSTS (פיד כללי) =========
   async getAllPosts(req, res, next) {
     try {
       const { page, limit } = req.query;
@@ -123,7 +110,6 @@ return res.status(201).json({
     }
   },
 
-  // ========= GET SINGLE POST PAGE (כולל תגובות) =========
   async getPostPage(req, res) {
     try {
       const { postId } = req.params;
@@ -133,7 +119,6 @@ return res.status(201).json({
         return res.status(400).json({ message: "Invalid postId" });
       }
 
-      // שליפת הפוסט ומוודאים שהוא לא מחוק או חסום ברמת HARMFUL קשה
       const post = await Post.findOne({
         _id: postId,
         deletedAt: null,
@@ -142,7 +127,6 @@ return res.status(201).json({
 
       if (!post) return res.status(404).json({ message: "Post not found" });
 
-      // שליפת תגובות ברמה הראשונה
       const comments = await Comment.find({
         postId,
         parentCommentId: null,
@@ -158,4 +142,37 @@ return res.status(201).json({
       res.status(500).json({ error: err.message });
     }
   },
+
+    async editPost(req, res, next) {
+    try {
+      const { postId } = req.params;
+      const userId = req.user?.userId;
+
+      const { title, content } = req.body;
+
+      const result = await postService.editPost(postId, userId, { title, content });
+
+      // result = { post, aiMessage }
+      return res.status(200).json({
+        ...result.post,
+        aiMessage: result.aiMessage,
+      });
+    } catch (err) {
+      next(err);
+    }
+  },
+
+  async deletePost(req, res, next) {
+    try {
+      const { postId } = req.params;
+      const userId = req.user?.userId;
+
+      await postService.deletePost(postId, userId);
+
+      return res.status(204).send();
+    } catch (err) {
+      next(err);
+    }
+  },
+
 };

@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { postController } from "../controllers/postController.js";
-import { requireAuth } from "../middlewares/authMiddleware.js"; // שים לב לנתיב הנכון אצלך (middlewares או middleware)
+import { requireAuth } from "../middlewares/authMiddleware.js"; 
 
 const postRouter = Router();
 
@@ -11,5 +11,8 @@ postRouter.get("/:postId", requireAuth, postController.getPostPage);
 
 // POST
 postRouter.post("/", requireAuth, postController.createPost);
+
+postRouter.put("/:postId", requireAuth, postController.editPost);
+postRouter.delete("/:postId", requireAuth, postController.deletePost);
 
 export default postRouter;
