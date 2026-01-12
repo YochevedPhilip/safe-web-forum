@@ -22,7 +22,6 @@ export const deletePost = async (id) => {
   return await Post.findByIdAndUpdate(id, { deletedAt: new Date() }, { new: true });
 };
 
-// פונקציות נוספות ל־repository לפי נושאים ומיון
 export const postRepository = {
   findByTopicId(topicId, limit = 10, skip = 0) {
     return Post.find({ topicId, publishedAt: { $ne: null }, blockedAt: null, deletedAt: null })
@@ -46,5 +45,16 @@ export const postRepository = {
       .select("title content createdAt publishedAt stats publisherId")
       .populate("publisherId", "username")
       .lean();
-  }
+  },
+    async findById(postId) {
+    return Post.findOne({
+      _id: postId,
+      deletedAt: null,
+      blockedAt: null,
+      publishedAt: { $ne: null },
+    })
+      .populate("publisherId", "username")
+      .lean();
+  },
+
 };

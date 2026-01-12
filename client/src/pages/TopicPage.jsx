@@ -1,15 +1,16 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
 import PostCard from "../components/PostCard";
 import { topicsService } from "../services/topicsService";
 import { postsService } from "../services/postsService";
 import { likesService } from "../services/likesService";
-import styles from "../styles/App.module.css";
+import topicStyles from "../styles/TopicPage.module.css";
 const LIMIT = 10;
 
-const TopicPage = ({ searchQuery = "" }) => {  const { topicId } = useParams();
+const TopicPage = ({ searchQuery = "" }) => {
+  const { topicId } = useParams();
   const navigate = useNavigate();
 
   const [topicTitle, setTopicTitle] = useState("");
@@ -27,13 +28,13 @@ const TopicPage = ({ searchQuery = "" }) => {  const { topicId } = useParams();
       likes: p.likes ?? p.stats?.likeCount ?? 0,
     }));
 
-  const fetchPostsPage = async (nextPage, { replace = false } = {}) => {
+  const fetchPostsPage = useCallback(async (nextPage, { replace = false } = {}) => {
     const res = await postsService.getTopicPosts(topicId, nextPage, LIMIT);
     const list = normalizePosts(res.data);
     setPosts((prev) => (replace ? list : [...prev, ...list]));
     setPage(nextPage);
     setHasMore(list.length === LIMIT);
-  };
+  }, [topicId]);
 
   useEffect(() => {
     let isMounted = true;
@@ -59,7 +60,7 @@ const TopicPage = ({ searchQuery = "" }) => {  const { topicId } = useParams();
     };
     fetchTopicAndFirstPage();
     return () => { isMounted = false; };
-  }, [topicId]);
+  }, [topicId, fetchPostsPage]);
 
   const toggleLike = async (post) => {
     const postId = String(post.id ?? post._id);
@@ -81,7 +82,7 @@ const TopicPage = ({ searchQuery = "" }) => {  const { topicId } = useParams();
       if (wasLiked) await likesService.unlikePost(postId);
       else await likesService.likePost(postId);
     } catch (err) {
-      // Rollback אם נכשל
+      // Rollback if failed
       setPosts((prev) =>
         prev.map((p) => {
           const pid = String(p.id ?? p._id);
@@ -114,25 +115,57 @@ const TopicPage = ({ searchQuery = "" }) => {  const { topicId } = useParams();
     );
   });
 
-  if (loading) return <div className="mainContainer"><div className="loading-state">טוען פוסטים...</div></div>;
-  if (error) return <div className="mainContainer"><div className="message-card"><h2>אופס!</h2><p>{error}</p></div></div>;
+  if (loading) {
+    return (
+      <div className={topicStyles.container}>
+        <div className={topicStyles.loadingState}>
+          <div className={topicStyles.loadingSpinner}></div>
+          <div className={topicStyles.loadingText}>Loading posts...</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className={topicStyles.container}>
+        <div className={topicStyles.errorState}>
+          <div className={topicStyles.errorIcon}>⚠️</div>
+          <h2 className={topicStyles.errorTitle}>Oops!</h2>
+          <p className={topicStyles.errorText}>{error}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="mainContainer page-bottom-padding">
-      <div className="page-header">
-        <h1 className="page-title">{topicTitle || "נושא"}</h1>
-        <button className="btn-pink btn-small" onClick={() => navigate(`/topics/${topicId}/create-post`)}>
-          + פוסט חדש
+    <div className={topicStyles.container}>
+      <div className={topicStyles.header}>
+        <h1 className={topicStyles.title}>{topicTitle || "Topic"}</h1>
+        <button 
+          className={topicStyles.createButton} 
+          onClick={() => navigate(`/topics/${topicId}/create-post`)}
+          aria-label="Create new post"
+        >
+          New Post
         </button>
       </div>
 
       {filteredPosts.length === 0 ? (
-        <div className="message-card">
-          <p>{searchQuery ? `לא נמצאו פוסטים שתואמים ל-"${searchQuery}"` : "עדיין אין פוסטים בנושא זה."}</p>
+        <div className={topicStyles.emptyState}>
+          <div className={topicStyles.emptyStateIcon}>📝</div>
+          <h2 className={topicStyles.emptyStateTitle}>
+            {searchQuery ? "No posts found" : "No posts yet"}
+          </h2>
+          <p className={topicStyles.emptyStateText}>
+            {searchQuery 
+              ? `No posts found matching "${searchQuery}"` 
+              : "There are no posts in this topic yet. Be the first to post!"}
+          </p>
         </div>
       ) : (
         <>
-          <div className="posts-stack">
+          <div className={topicStyles.postsContainer}>
             {filteredPosts.map((post) => (
               <PostCard
                 key={String(post.id ?? post._id)}
@@ -144,14 +177,15 @@ const TopicPage = ({ searchQuery = "" }) => {  const { topicId } = useParams();
           </div>
 
           {!searchQuery && hasMore && (
-            <div className="load-more-wrapper">
+            <div className={topicStyles.loadMoreWrapper}>
               <button 
-  className={styles['btn-mint']} // בגלל שיש מקף בשם, משתמשים בסוגריים מרובעים
-  onClick={loadMore} 
-  disabled={loadingMore}
->
-  {loadingMore ? "טוען עוד..." : "טען פוסטים נוספים"}
-</button>
+                className={topicStyles.loadMoreButton}
+                onClick={loadMore} 
+                disabled={loadingMore}
+                aria-label="Load more posts"
+              >
+                {loadingMore ? "Loading more..." : "Load more posts"}
+              </button>
             </div>
           )}
         </>

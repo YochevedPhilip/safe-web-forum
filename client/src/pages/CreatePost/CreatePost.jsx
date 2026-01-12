@@ -13,22 +13,24 @@ const CreatePost = () => {
   const API_BASE_URL = import.meta.env.VITE_SERVER_API_URL;
 
   const handlePublish = async () => {
-    // 1. בדיקת אורך - alert פשוט שמשאיר את המשתמש בעמוד
-    if (title.trim().length < 3) {
-      alert("הכותרת קצרה מדי. כדאי להוסיף מילה או שתיים.");
+
+    if (title.length < 3) {
+      navigate("/error", { state: { message: "Title is too short." } });
       return;
     }
-    if (text.trim().length < 10) {
-      alert("הפוסט קצר מדי. כדאי לכתוב לפחות משפט אחד (מינימום 10 תווים).");
+    if (text.length < 10) {
+      navigate("/error", { state: { message: "Content is too short." } });
       return;
     }
 
-    const token = localStorage.getItem("token");
-    if (!token) {
-      alert("צריך להתחבר כדי לפרסם פוסט.");
-      navigate("/login");
-      return;
-    }
+
+      const token = localStorage.getItem("token");
+      console.log("token:", token);
+
+  if (!token) {
+    navigate("/error", { state: { message: "You must be logged in to publish a post." } });
+    return;
+  }
 
     setLoading(true);
     setProgress(10);
@@ -70,17 +72,16 @@ const CreatePost = () => {
             },
           });
         } else {
-          // חסימה (HIGH RISK): עובר לעמוד שגיאה עם נתונים להצגת ער"ן
+
+          // Ensure user sees a meaningful message
+          const errorMessage = data.messageToUser || data.error || "Something went wrong, please try again";
           navigate("/error", {
-            state: { 
-              message: data.messageToUser || "הפוסט נחסם מטעמי בטיחות",
-              categories: data.categories || ["תוכן רגיש"] // מבטיח שהתנאי ב-ErrorPost יעבוד
-            },
+            state: { message: errorMessage },
           });
         }
       }, 500);
     } catch (err) {
-      alert("שגיאה בחיבור לשרת: " + err.message);
+      alert("Server connection error: " + err.message);
     } finally {
       setTimeout(() => {
         setLoading(false);
@@ -93,7 +94,7 @@ const CreatePost = () => {
     <div className="mainContainer">
       <div className="form-card">
         <h2 style={{ textAlign: 'center', color: 'var(--luxury-dark)', marginBottom: '20px' }}>
-          יצירת פוסט חדש
+          Create New Post
         </h2>
 
         <input
@@ -101,7 +102,7 @@ const CreatePost = () => {
           className="form-control"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          placeholder="מה הכותרת שלך?"
+          placeholder="What's your title?"
         />
 
         <textarea
@@ -109,7 +110,7 @@ const CreatePost = () => {
           style={{ height: "180px", resize: "none" }}
           value={text}
           onChange={(e) => setText(e.target.value)}
-          placeholder="שתפו אותנו במחשבות שלכם..."
+          placeholder="Share your thoughts with us..."
         />
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
@@ -120,7 +121,7 @@ const CreatePost = () => {
             onChange={(e) => setIsAnonymous(e.target.checked)}
           />
           <label htmlFor="anon" style={{ cursor: 'pointer', fontWeight: '500' }}>
-            פרסם בעילום שם
+            Publish anonymously
           </label>
         </div>
 
@@ -129,7 +130,8 @@ const CreatePost = () => {
             <div className="progress-container">
               <div className="progress-bar" style={{ width: `${progress}%` }} />
             </div>
-            <p className="progress-text">בודק בטיחות תוכן... {progress}%</p>
+
+            <p className="progress-text">Loading... {progress}%</p>
           </div>
         )}
 
@@ -138,7 +140,7 @@ const CreatePost = () => {
           onClick={handlePublish}
           disabled={loading}
         >
-          {loading ? "מנתח תוכן..." : "פרסם פוסט עכשיו"}
+          {loading ? "Publishing..." : "Publish Post Now"}
         </button>
       </div>
     </div>

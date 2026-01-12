@@ -7,7 +7,7 @@ const axiosInstance = axios.create({
   headers: { "Content-Type": "application/json" },
 });
 
-// מוסיף token אוטומטית לכל בקשה
+// Automatically adds token to every request
 axiosInstance.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
@@ -17,7 +17,7 @@ axiosInstance.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// אם קיבלנו 401 — token פג/לא תקין → מוחקים ומפנים ללוגין
+// If we received 401 — token expired/invalid → remove and redirect to login
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
@@ -25,9 +25,9 @@ axiosInstance.interceptors.response.use(
     if (status === 401) {
       localStorage.removeItem("token");
 
-      // אם יש לך AuthContext עם logout עדיף לקרוא אליו במקום:
+      // If you have AuthContext with logout, prefer calling it instead:
       // authDispatch({ type: "LOGOUT" })
-      // אבל להאקתון זה מספיק:
+      // But for hackathon this is enough:
       if (window.location.pathname !== "/login") {
         window.location.href = "/login";
       }
