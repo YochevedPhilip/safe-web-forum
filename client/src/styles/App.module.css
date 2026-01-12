@@ -535,3 +535,279 @@
     scroll-behavior: smooth;
   }
 }
+
+
+/* כרטיס הודעה רך ותומך */
+.message-card-soft {
+  background: #ffffff;
+  border-radius: 30px;
+  padding: 50px 30px;
+  text-align: center;
+  max-width: 600px;
+  margin: 40px auto;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.03);
+  border: 1px solid #f0f0f0;
+}
+
+.iconHeart {
+  font-size: 50px;
+  margin-bottom: 20px;
+  animation: pulse 2s infinite; /* אנימציה עדינה של דופק */
+}
+
+.supportContent p {
+  font-size: 1.2rem;
+  line-height: 1.8;
+  color: #4a4a4a;
+  margin-bottom: 30px;
+  white-space: pre-wrap; /* שומר על ירידות שורה מה-AI */
+}
+
+.actionWrapper {
+  margin-top: 20px;
+}
+
+/* אנימציה עדינה ללב */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+.helpButtonsWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  margin: 30px 0;
+}
+
+/* כפתור ער"ן המעוצב */
+.eranButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background-color: #ff4757; /* אדום רך וברור לעזרה */
+  color: white;
+  padding: 15px 30px;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 1.1rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 15px rgba(255, 71, 87, 0.3);
+}
+
+.eranButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 71, 87, 0.4);
+}
+
+.eranLink {
+  color: #5c7cfa;
+  text-decoration: underline;
+  font-size: 0.95rem;
+}
+
+/* כפתור חזרה לדף הבית בגרסה עדינה */
+.btn-mint-outline {
+  background: transparent;
+  border: 2px solid #50d890;
+  color: #2d6a4f;
+  padding: 10px 25px;
+  border-radius: 50px;
+  cursor: pointer;
+  font-weight: 500;
+}
+/* רקע העמוד - צבע קרם/תכלת רך מאוד */
+.hugPageWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  background-color: #fdfbf7; /* צבע שמנת רך */
+  padding: 20px;
+}
+
+/* הכרטיס המחבק */
+.hugCard {
+  background: white;
+  padding: 40px;
+  border-radius: 40px; /* פינות עגולות מאוד למראה רך */
+  box-shadow: 0 15px 50px rgba(234, 226, 215, 0.5);
+  max-width: 550px;
+  width: 100%;
+  text-align: center;
+  border: 2px solid #fff5e6;
+}
+
+.hugEmoji {
+  font-size: 60px;
+  margin-bottom: 20px;
+  display: inline-block;
+  animation: sway 3s ease-in-out infinite; /* אנימציה של נדנוד עדין */
+}
+
+.hugTitle {
+  color: #7d5a50; /* חום רך, לא שחור */
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+.hugMessage p {
+  color: #8a7a73;
+  line-height: 1.8;
+  font-size: 1.15rem;
+  margin-bottom: 30px;
+}
+
+/* כפתור ער"ן - במקום אדום מלחיץ, נשתמש בבורדו-ורדרד עמוק או סגול רך */
+.warmHelpButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: #f89d9d; /* ורוד-אפרסק חם */
+  color: white;
+  padding: 18px 30px;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+  margin-bottom: 15px;
+}
+
+.warmHelpButton:hover {
+  background: #f68686;
+  transform: scale(1.02);
+}
+
+.softLink {
+  color: #a0938d;
+  font-size: 0.95rem;
+  text-decoration: underline;
+  display: block;
+}
+
+.backHomeSoft {
+  margin-top: 40px;
+  background: none;
+  border: 2px solid #e0e0e0;
+  color: #b0b0b0;
+  padding: 10px 25px;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.backHomeSoft:hover {
+  border-color: #f89d9d;
+  color: #f89d9d;
+}
+
+/* אנימציה של נדנוד עדין */
+@keyframes sway {
+  0%, 100% { transform: rotate(-5deg); }
+  50% { transform: rotate(5deg); }
+}
+.statusIcons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  font-size: 40px;
+  margin-bottom: 20px;
+}
+
+.supportMiniSection {
+  background: #fdf2f2; /* ורוד בהיר מאוד */
+  padding: 15px;
+  border-radius: 20px;
+  margin-bottom: 20px;
+}
+
+.supportMiniSection p {
+  font-size: 0.95rem;
+  margin-bottom: 8px;
+  color: #a07a7a;
+}
+
+.warmLinkSmall {
+  color: #f89d9d;
+  font-weight: 700;
+  text-decoration: none;
+}
+.issuesBox {
+  background: #fff9f9; /* ורדרד-לבן עדין מאוד */
+  border-radius: 20px;
+  padding: 20px;
+  margin: 20px 0;
+  border: 1px dashed #f89d9d; /* קו מקווקו נותן תחושה פחות "קשוחה" */
+  text-align: right;
+}
+
+.issuesTitle {
+  font-weight: bold;
+  color: #7d5a50;
+  margin-bottom: 8px;
+}
+
+.issuesList {
+  list-style: none;
+  padding: 0;
+  color: #8a7a73;
+  font-size: 0.95rem;
+}
+
+.issuesList li {
+  margin-bottom: 4px;
+}
+/* תצוגת הפוסט בתוך כרטיס החיבוק */
+.postPreviewInsideCard {
+  background: #f9f9f9;
+  border: 1px solid #eeeeee;
+  border-radius: 20px;
+  padding: 20px;
+  margin: 25px 0;
+  text-align: right;
+  position: relative;
+}
+
+.postPreviewHeader {
+  margin-bottom: 10px;
+}
+
+.postPreviewStatus {
+  font-size: 0.8rem;
+  background: #50d890;
+  color: white;
+  padding: 3px 10px;
+  border-radius: 10px;
+  font-weight: bold;
+}
+
+.postPreviewTitle {
+  font-size: 1.2rem;
+  color: #333;
+  margin: 10px 0;
+}
+
+.postPreviewText {
+  font-size: 1rem;
+  color: #666;
+  line-height: 1.6;
+}
+
+.postPreviewFooter {
+  margin-top: 15px;
+  font-size: 0.85rem;
+  color: #999;
+  border-top: 1px solid #eee;
+  padding-top: 10px;
+}
+
+/* סקשן תמיכה קטן יותר */
+.supportSectionSmall {
+  margin: 20px 0;
+}
