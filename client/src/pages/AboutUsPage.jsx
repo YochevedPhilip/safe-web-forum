@@ -3,121 +3,146 @@ export default function AboutUsPage() {
   const teamMembers = [
     {
       id: 1,
-      name: "Team Member 1",
+      name: "Lital",
       role: "Developer",
-      description: "Passionate about creating safe spaces for meaningful conversations."
-    },
-    {
-      id: 2,
-      name: "Team Member 2",
-      role: "Developer",
-      description: "Dedicated to building user-friendly experiences."
+      image: "/lital.jpeg"
     },
     {
       id: 3,
-      name: "Team Member 3",
+      name: "Shir",
       role: "Developer",
-      description: "Focused on security and user privacy."
+      image: "/shir.jpeg"
     },
     {
       id: 4,
-      name: "Team Member 4",
+      name: "Yocheved",
       role: "Developer",
-      description: "Committed to making the web a better place."
+      image: "/yocheved.jpeg"
+    },
+    {
+      id: 5,
+      name: "Tifferet",
+      role: "Developer",
+      image: "/tifferet.jpeg"
+    }
+    ,
+    {
+      id: 2,
+      name: "Sapir",
+      role: "Team Leader",
+      image: "/sapir.jpeg"
     }
   ];
 
   return (
-    <div className="mainContainer">
-      <div style={{ textAlign: "center", marginBottom: "50px" }}>
-        <h1 style={{ 
-          fontSize: "2.5rem", 
-          fontWeight: 700, 
-          color: "var(--luxury-dark)",
-          marginBottom: "20px"
-        }}>
-          About Us
-        </h1>
-        <p style={{ 
-          fontSize: "1.2rem", 
-          color: "var(--luxury-dark)",
-          maxWidth: "800px",
-          margin: "0 auto",
-          lineHeight: "1.8"
-        }}>
-          We are a team of 4 developers committed to creating a safe and supportive platform for sharing thoughts and experiences.
-          Our goal is to provide a place where everyone can express themselves freely and securely.
-        </p>
-      </div>
-
+    <div style={{ 
+      minHeight: "100vh",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      padding: "40px 20px"
+    }}>
+      {/* Light Blue Background Section */}
       <div style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-        gap: "30px",
-        marginBottom: "50px"
+        width: "100%",
+        maxWidth: "1200px",
+        background: "#DDEBF7",
+        padding: "80px 60px",
+        textAlign: "center"
       }}>
-        {teamMembers.map((member) => (
-          <div
-            key={member.id}
-            style={{
-              background: "white",
-              borderRadius: "var(--card-radius)",
-              padding: "30px",
-              boxShadow: "0 10px 25px rgba(0,0,0,0.05)",
-              textAlign: "center",
-              transition: "var(--transition-smooth)"
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "translateY(-8px)";
-              e.currentTarget.style.boxShadow = "0 20px 40px rgba(0,0,0,0.08)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = "translateY(0)";
-              e.currentTarget.style.boxShadow = "0 10px 25px rgba(0,0,0,0.05)";
-            }}
-          >
+        {/* Title */}
+        <h1 style={{
+          fontSize: "3.5rem",
+          fontWeight: 700,
+          color: "white",
+          marginBottom: "30px",
+          fontFamily: "'Segoe UI', system-ui, -apple-system, sans-serif"
+        }}>
+          Our Team Members
+        </h1>
+
+        {/* Subtitle */}
+        <p style={{
+          fontSize: "1.1rem",
+          color: "#666",
+          fontStyle: "italic",
+          marginBottom: "60px",
+          maxWidth: "800px",
+          marginLeft: "auto",
+          marginRight: "auto"
+        }}>
+         SafeTalk is a platform that allows you to share your thoughts and ideas with others.
+         We built this platform to help you connect with others and share your thoughts and ideas.
+        </p>
+
+        {/* Team Members Row */}
+        <div style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "flex-start",
+          gap: "40px",
+          flexWrap: "nowrap",
+          marginBottom: "50px",
+          overflowX: "auto",
+          padding: "20px 0"
+        }}>
+          {teamMembers.map((member) => (
             <div
+              key={member.id}
               style={{
-                width: "100px",
-                height: "100px",
-                borderRadius: "50%",
-                background: "linear-gradient(135deg, rgba(106, 45, 154, 0.85), rgba(45, 106, 154, 0.8))",
-                margin: "0 auto 20px",
-                display: "grid",
-                placeItems: "center",
-                fontSize: "2.5rem",
-                fontWeight: "bold",
-                color: "white",
-                boxShadow: "0 4px 15px rgba(0,0,0,0.1)"
+                textAlign: "center",
+                flex: "0 0 auto"
               }}
             >
-              {member.name.charAt(0)}
+              {/* Circular Image */}
+              <div style={{
+                width: "180px",
+                height: "180px",
+                borderRadius: "50%",
+                margin: "0 auto 20px",
+                overflow: "hidden",
+                border: "5px solid white",
+                background: "#f0f0f0"
+              }}>
+                <img
+                  src={member.image}
+                  alt={member.name}
+                  onError={(e) => {
+                    e.target.style.display = "none";
+                    e.target.parentElement.style.background = "#e0e0e0";
+                    e.target.parentElement.innerHTML = `<span style="color: #999; font-size: 4rem; font-weight: bold; display: grid; place-items: center; height: 100%;">${member.name.charAt(0)}</span>`;
+                  }}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover"
+                  }}
+                />
+              </div>
+
+              {/* Name */}
+              <h3 style={{
+                fontSize: "1.3rem",
+                fontWeight: 700,
+                color: "#333",
+                marginBottom: "8px",
+                marginTop: 0
+              }}>
+                {member.name}
+              </h3>
+
+              {/* Role */}
+              <p style={{
+                fontSize: "0.95rem",
+                color: "#666",
+                fontWeight: 400,
+                margin: 0
+              }}>
+                {member.role}
+              </p>
             </div>
-            <h3 style={{
-              fontSize: "1.5rem",
-              fontWeight: 700,
-              color: "var(--luxury-dark)",
-              marginBottom: "10px"
-            }}>
-              {member.name}
-            </h3>
-            <p style={{
-              fontSize: "1rem",
-              color: "var(--accent-teal)",
-              fontWeight: 600,
-              marginBottom: "15px"
-            }}>
-              {member.role}
-            </p>
-            <p style={{
-              fontSize: "0.95rem",
-              color: "#666",
-              lineHeight: "1.6"
-            }}>
-              {member.description}
-            </p>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );

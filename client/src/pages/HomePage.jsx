@@ -23,7 +23,7 @@ const HomePageDemo = ({ searchQuery = "" }) => {
       "Friendship and Social Connections": "https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=800",
       "Self-Image and Confidence": "https://images.unsplash.com/photo-1515377905703-c4788e51af15?q=80&w=800"
     };
-    return images[title] || `https://picsum.photos/seed/${index}/800/600?grayscale`;
+    return images[title] || `https://picsum.photos/seed/${index}/800/600`;
   };
 
   useEffect(() => {

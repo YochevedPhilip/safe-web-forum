@@ -54,12 +54,15 @@
 
 .appLogo {
   height: 100px;
-  width: auto;
+  width: 100px;
   object-fit: contain;
-  background: transparent;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 50%;
+  padding: 10px;
   mix-blend-mode: multiply;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
   transition: all 0.3s ease;
+  border: 3px solid rgba(255, 255, 255, 0.8);
 }
 
 .navLinks {
@@ -408,6 +411,7 @@
 
   .appLogo {
     height: 85px;
+    width: 85px;
   }
 
   .searchContainer {
@@ -426,6 +430,7 @@
 
   .appLogo {
     height: 70px;
+    width: 70px;
   }
 
   .mobileMenuToggle {
@@ -501,6 +506,7 @@
 
   .appLogo {
     height: 60px;
+    width: 60px;
   }
 
   .appNav {
