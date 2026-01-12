@@ -64,7 +64,7 @@ cd safe-web-forum
 
 Install dependencies:
 
-cd client
+cd client 
 npm install
 
 cd ../server

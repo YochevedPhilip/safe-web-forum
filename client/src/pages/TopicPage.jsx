@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
 import PostCard from "../components/PostCard";
@@ -28,13 +28,13 @@ const TopicPage = ({ searchQuery }) => {
       likes: p.likes ?? p.stats?.likeCount ?? 0,
     }));
 
-  const fetchPostsPage = async (nextPage, { replace = false } = {}) => {
+  const fetchPostsPage = useCallback(async (nextPage, { replace = false } = {}) => {
     const res = await postsService.getTopicPosts(topicId, nextPage, LIMIT);
     const list = normalizePosts(res.data);
     setPosts((prev) => (replace ? list : [...prev, ...list]));
     setPage(nextPage);
     setHasMore(list.length === LIMIT);
-  };
+  }, [topicId]);
 
   useEffect(() => {
     let isMounted = true;
@@ -60,7 +60,7 @@ const TopicPage = ({ searchQuery }) => {
     };
     fetchTopicAndFirstPage();
     return () => { isMounted = false; };
-  }, [topicId]);
+  }, [topicId, fetchPostsPage]);
 
   const toggleLike = async (post) => {
     const postId = String(post.id ?? post._id);

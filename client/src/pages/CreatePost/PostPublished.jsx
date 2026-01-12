@@ -19,7 +19,7 @@ const PostPublished = () => {
           color: isSensitive ? sensitiveColor : "var(--mint-soft)", 
           fontWeight: "800",
           marginBottom: "10px"
-          ,fontSize:"35px"
+          // ,fontSize:"35px"
         }}>
           {isSensitive ? "הפוסט פורסם" : "הפוסט פורסם בהצלחה"}
         </h1>
@@ -42,7 +42,7 @@ const PostPublished = () => {
               fontSize: "0.85rem", // פונט קטן משמעותית
               fontWeight: "500",
               lineHeight: "1.4"
-              ,fontSize:"18px"
+              // ,fontSize:"18px"
 
             }}>
               <span style={{ marginLeft: "5px" }}>💡</span>

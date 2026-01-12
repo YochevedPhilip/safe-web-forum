@@ -9,6 +9,7 @@ import CreatePost from "./pages/CreatePost/CreatePost.jsx";
 import PostPublished from "./pages/CreatePost/PostPublished.jsx";
 import ErrorPost from "./pages/CreatePost/ErrorPost.jsx";
 import PostPage from "./pages/PostPage.jsx";
+import AboutUs from "./pages/AboutUsPage.jsx";
 
 import styles from "./styles/App.module.css";
 import "./styles/global.css";
@@ -36,6 +37,7 @@ function AppLayout() {
         {/* תפריט ואווטאר בצד ימין */}
         <nav className={styles.appNav}>
           {user && pathname !== "/" && <Link to="/" className={styles.appLink}>Home</Link>}
+          {user && pathname !== "/about" && <Link to="/about" className={styles.appLink}>About Us</Link>}
           {!user && pathname !== "/login" && <Link to="/login" className={styles.appLink}>Login</Link>}
           {!user && pathname !== "/register" && <Link to="/register" className={styles.appLink}>Register</Link>}
           {user && (
@@ -64,6 +66,7 @@ function AppLayout() {
           <Route path="/" element={user ? <Home /> : <Navigate to="/login" />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/about" element={user ? <AboutUs /> : <Navigate to="/login" />} />
           <Route path="/topics/:topicId" element={<TopicPage />} />
           <Route path="/topics/:topicId/create-post" element={<CreatePost />} />
           <Route path="/post-published" element={<PostPublished />} />

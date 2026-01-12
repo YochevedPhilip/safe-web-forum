@@ -74,7 +74,7 @@ const CreatePost = () => {
           // כאן אנחנו מוודאים שהמשתמש יראה הודעה משמעותית
           const errorMessage = data.messageToUser || data.error || "משהו השתבש, כדאי לנסות שוב";
           navigate("/error", {
-            state: { message: data.messageToUser || "שגיאה בפרסום הפוסט" },
+            state: { message: errorMessage },
           });
         }
       }, 500);

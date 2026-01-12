@@ -53,7 +53,7 @@ const HomePageDemo = ({ searchQuery = "" }) => {
     };
     fetchTopics();
     return () => { isMounted = false; };
-  }, []);
+  }, [API_BASE_URL]);
 
   const filteredTopics = topics.filter(t => 
     t.title.toLowerCase().includes(searchQuery.toLowerCase())

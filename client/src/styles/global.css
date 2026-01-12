@@ -1,11 +1,15 @@
 /* --- משתנים גלובליים --- */
 :root {
   --mint-soft: #76c893;
-  --peach-soft: #ff9a8b;
+  --primary-purple: #6A2D9A;
+  --primary-blue: #2D6A9A;
+  --accent-teal: #2DB3C0;
   --luxury-dark: #53474F;
-  --bg-pink-pale: #fff5f8;
+  --bg-pink-pale: #f5f0f9;
   --card-radius: 24px;
   --transition-smooth: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  /* Legacy support - map old colors to new palette */
+  --peach-soft: var(--accent-teal);
 }
 
 /* איפוס בסיסי */
@@ -39,7 +43,7 @@ a {
   align-items: center;
   padding: 10px 60px;
   direction: ltr; /* הלוגו נשאר בשמאל */
-  background: linear-gradient(135deg, rgba(118,200,147,0.85), rgba(255,154,139,0.8));
+  background: linear-gradient(135deg, rgba(106, 45, 154, 0.85), rgba(45, 106, 154, 0.8));
   border-radius: 0 0 50px 50px;
   box-shadow: 0 4px 15px rgba(0,0,0,0.1);
   position: sticky;
@@ -95,7 +99,7 @@ a {
   width: 45px;
   height: 45px;
   border-radius: 50%;
-  background-color: #5fb3c1;
+  background-color: var(--accent-teal);
   color: white;
   display: grid;
   place-items: center;
@@ -133,7 +137,7 @@ a {
 .topicCard:hover, .post-card:hover {
   transform: translateY(-8px);
   box-shadow: 0 20px 40px rgba(0,0,0,0.08);
-  border-color: var(--peach-soft);
+  border-color: var(--accent-teal);
 }
 
 .topicCard img {
@@ -159,7 +163,7 @@ a {
 }
 
 .topicCard:hover .topicOverlay {
-  background: linear-gradient(135deg, rgba(118,200,147,0.85), rgba(255,154,139,0.8));
+  background: linear-gradient(135deg, rgba(106, 45, 154, 0.85), rgba(45, 106, 154, 0.8));
 }
 
 .topicTitle, .post-title {
@@ -208,7 +212,7 @@ a {
 /* --- Footer --- */
 .footer {
   padding: 30px 20px;
-  background-color: var(--peach-soft);
+  background: linear-gradient(135deg, rgba(106, 45, 154, 0.9), rgba(45, 106, 154, 0.9));
   color: white;
   text-align: center;
   margin-top: 50px;
