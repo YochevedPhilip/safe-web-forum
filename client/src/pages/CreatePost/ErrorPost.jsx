@@ -1,21 +1,39 @@
-import { useLocation, Link } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import styles from "../../styles/App.module.css";
 
 const ErrorPost = () => {
+  const navigate = useNavigate();
   const location = useLocation();
-  const message = location.state?.message || "הפוסט שלך לא ניתן לפרסום.";
+  const message = location.state?.message || "חשוב לנו שתדעו שאתם לא לבד, ויש מי שמחכה להקשיב לכם.";
 
   return (
-    <div className="mainContainer">
-      <div className="message-card" style={{ maxWidth: "700px", margin: "40px auto", lineHeight: 1.6 }}>
-        {/* אייקון קטן להמחשה */}
-        <div style={{ fontSize: "3rem", marginBottom: "15px" }}>⚠️</div>
+    <div className={styles.hugPageWrapper}>
+      <div className={styles.hugCard}>
+        {/* איור עדין או אימוג'י מחבק */}
+        
+        <h1 className={styles.hugTitle}>רצינו לעצור רגע ולחבק...</h1>
+        
+        <div className={styles.hugMessage}>
+          <p>{message}</p>
+        </div>
 
-        <h2 style={{ color: "#d73b43", marginBottom: "20px" }}>לא נוכל לפרסם את הפוסט</h2>
-        <p>{message}</p>
+        <div className={styles.supportSection}>
+          <p className={styles.supportLabel}>מישהו מחכה לדבר איתך עכשיו:</p>
+          <a href="tel:1201" className={styles.warmHelpButton}>
+            <span className={styles.phoneIcon}>📞</span>
+            <span>שיחה חמה עם ער"ן (1201)</span>
+          </a>
+          <a href="https://www.eran.org.il/" target="_blank" rel="noopener noreferrer" className={styles.softLink}>
+            מעדיף/ה להתכתב בצ'אט? לחצ/י כאן
+          </a>
+        </div>
 
-        <Link to="/" className="btn-back">
-          חזרה לדף הבית
-        </Link>
+        <button 
+          className={styles.backHomeSoft} 
+          onClick={() => navigate("/")}
+        >
+          חזרה למקום בטוח
+        </button>
       </div>
     </div>
   );

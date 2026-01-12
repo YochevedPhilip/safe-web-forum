@@ -13,38 +13,37 @@ const CreatePost = () => {
   const API_BASE_URL = import.meta.env.VITE_SERVER_API_URL;
 
   const handlePublish = async () => {
-    if (title.length < 3) {
-      navigate("/error", { state: { message: "הכותרת קצרה מדי." } });
+    // 1. בדיקת אורך - alert פשוט שמשאיר את המשתמש בעמוד
+    if (title.trim().length < 3) {
+      alert("הכותרת קצרה מדי. כדאי להוסיף מילה או שתיים.");
       return;
     }
-    if (text.length < 10) {
-      navigate("/error", { state: { message: "התוכן קצר מדי." } });
+    if (text.trim().length < 10) {
+      alert("הפוסט קצר מדי. כדאי לכתוב לפחות משפט אחד (מינימום 10 תווים).");
       return;
     }
 
-
-      const token = localStorage.getItem("token");
-      console.log("token:", token);
-
-  if (!token) {
-    navigate("/error", { state: { message: "צריך להתחבר כדי לפרסם פוסט." } });
-    return;
-  }
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("צריך להתחבר כדי לפרסם פוסט.");
+      navigate("/login");
+      return;
+    }
 
     setLoading(true);
     setProgress(10);
 
     try {
-      // סימולציה של טעינה מדורגת
       const interval = setInterval(() => {
         setProgress((prev) => (prev < 90 ? prev + 10 : prev));
       }, 300);
 
       const res = await fetch(`${API_BASE_URL}/api/posts`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", 
-        Authorization: `Bearer ${token}`,
-      },
+        headers: { 
+          "Content-Type": "application/json", 
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({
           topicId,
           title,
@@ -53,8 +52,6 @@ const CreatePost = () => {
         }),
       });
 
-     
-
       clearInterval(interval);
       setProgress(100);
 
@@ -62,19 +59,23 @@ const CreatePost = () => {
 
       setTimeout(() => {
         if (res.status === 201) {
+          // הצלחה: הפוסט עלה (כולל מצב MEDIUM עם תמיכה)
           navigate("/post-published", {
             state: { 
               title, 
               text, 
-              anonymous: isAnonymous,
-              aiMessage: data.aiMessage // העברת הודעת ה-AI
+              riskLevel: data.riskLevel, 
+              categories: data.categories,
+              aiMessage: data.aiMessage 
             },
           });
         } else {
-          // כאן אנחנו מוודאים שהמשתמש יראה הודעה משמעותית
-          const errorMessage = data.messageToUser || data.error || "משהו השתבש, כדאי לנסות שוב";
+          // חסימה (HIGH RISK): עובר לעמוד שגיאה עם נתונים להצגת ער"ן
           navigate("/error", {
-            state: { message: data.messageToUser || "שגיאה בפרסום הפוסט" },
+            state: { 
+              message: data.messageToUser || "הפוסט נחסם מטעמי בטיחות",
+              categories: data.categories || ["תוכן רגיש"] // מבטיח שהתנאי ב-ErrorPost יעבוד
+            },
           });
         }
       }, 500);
@@ -128,7 +129,7 @@ const CreatePost = () => {
             <div className="progress-container">
               <div className="progress-bar" style={{ width: `${progress}%` }} />
             </div>
-            <p className="progress-text">טוען... {progress}%</p>
+            <p className="progress-text">בודק בטיחות תוכן... {progress}%</p>
           </div>
         )}
 
@@ -137,7 +138,7 @@ const CreatePost = () => {
           onClick={handlePublish}
           disabled={loading}
         >
-          {loading ? "מפרסם כרגע..." : "פרסם פוסט עכשיו"}
+          {loading ? "מנתח תוכן..." : "פרסם פוסט עכשיו"}
         </button>
       </div>
     </div>
