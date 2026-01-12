@@ -14,16 +14,17 @@ const CreatePost = () => {
 
   const handlePublish = async () => {
 
+    
     if (title.length < 3) {
-      navigate("/error", { state: { message: "Title is too short." } });
+      alert("Title is too short.");
       return;
     }
+    
     if (text.length < 10) {
-      alert("/error", { state: { message: "Content is too short." } });
+      alert("Content is too short.");
       return;
     }
-
-
+    
       const token = localStorage.getItem("token");
       console.log("token:", token);
 
