@@ -1,11 +1,14 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
 
 const Register = () => {
   const [msg, setMsg] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+  const { setUser } = useContext(AuthContext);
 
   // Prefer using environment variable
   const API_BASE_URL = import.meta.env.VITE_SERVER_API_URL;
@@ -27,8 +30,10 @@ const Register = () => {
 
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
+      setUser(data.user);
 
-      setMsg(`Successfully registered! Welcome ${data.user.username}`);
+      // Navigate to home page after success
+      navigate("/");
     } catch (err) {
       setMsg("Error: " + err.message);
     }

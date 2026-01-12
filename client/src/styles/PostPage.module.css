@@ -96,11 +96,13 @@
   color: var(--luxury-dark);
   margin-bottom: 15px;
   line-height: 1.3;
+  text-align: center;
 }
 
 .postMetadata {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 15px;
   flex-wrap: wrap;
   font-size: 0.95rem;
@@ -125,6 +127,7 @@
   margin-bottom: 25px;
   padding-bottom: 25px;
   border-bottom: 1px solid #f0f0f0;
+  text-align: center;
 }
 
 .postActions {
@@ -344,4 +347,5 @@
   color: #444;
   line-height: 1.7;
   font-size: 1rem;
+  text-align: center;
 }
