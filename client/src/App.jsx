@@ -72,11 +72,11 @@ function AppLayout() {
       {/* Main */}
       <main className={styles.main}>
         <Routes>
-          <Route path="/" element={user ? <Home /> : <Navigate to="/login" />} />
+          <Route path="/" element={user ? <Home searchQuery={searchQuery} /> : <Navigate to="/login" />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/about" element={user ? <AboutUs /> : <Navigate to="/login" />} />
-          <Route path="/topics/:topicId" element={<TopicPage />} />
+          <Route path="/topics/:topicId" element={<TopicPage searchQuery={searchQuery} />} />
           <Route path="/topics/:topicId/create-post" element={<CreatePost />} />
           <Route path="/post-published" element={<PostPublished />} />
           <Route path="/error" element={<ErrorPost />} />
