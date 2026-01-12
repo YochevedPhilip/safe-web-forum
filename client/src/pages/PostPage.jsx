@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { likesService } from "../services/likesService";
+import LikeButton from "../components/likeButton.jsx";
+import { postsService } from "../services/postsService.js";
 import styles from "../styles/PostPage.module.css";
 
 export default function PostPage() {
@@ -12,39 +13,53 @@ export default function PostPage() {
   const [newComment, setNewComment] = useState("");
   const [msg, setMsg] = useState("");
   const [loading, setLoading] = useState(true);
-  const [isLiked, setIsLiked] = useState(false);
-  const [likesCount, setLikesCount] = useState(0);
   const [submitting, setSubmitting] = useState(false);
 
   const storedUser = localStorage.getItem("user");
   const user = storedUser ? JSON.parse(storedUser) : null;
 
-  const API_BASE_URL = import.meta.env.VITE_SERVER_API_URL || "http://localhost:5000";
+  const API_BASE_URL =
+    import.meta.env.VITE_SERVER_API_URL || "http://localhost:5000";
+
+  const normalizePost = (p) => {
+    const likes =
+      p?.likes ??
+      p?.stats?.likeCount ??
+      p?.stats?.like_count ??
+      0;
+
+    const liked =
+      Boolean(
+        p?.likedByMe ??
+        p?._localLiked ??
+        p?.liked ??
+        p?.isLiked
+      );
+
+    return { ...p, likes, _localLiked: liked };
+  };
 
   const loadPostPage = async () => {
     setLoading(true);
     setMsg("");
 
     try {
-      const res = await fetch(
-        `${API_BASE_URL}/api/posts/${postId}?limit=10`
-      );
+      // axios: אם יש 4xx/5xx לרוב יזרוק ל-catch
+      const res = await postsService.getPost(postId, 10);
+      const data = res.data;
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        setMsg(data.message || `Error ${res.status}`);
+      if (!data?.post) {
+        setMsg(data?.message || "Post not found");
         setPost(null);
         setComments([]);
         return;
       }
 
-      setPost(data.post);
+      setPost(normalizePost(data.post));
       setComments(data.comments || []);
-      setLikesCount(data.post?.likes || 0);
-      setIsLiked(data.post?.isLiked || false);
     } catch (err) {
-      setMsg(`Failed to load post: ${err.message}`);
+      const serverMsg = err?.response?.data?.message;
+      setMsg(serverMsg || `Failed to load post: ${err.message}`);
       setPost(null);
       setComments([]);
     } finally {
@@ -56,48 +71,6 @@ export default function PostPage() {
     loadPostPage();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [postId]);
-
-  // const handleAddComment = async (e) => {
-  //   e.preventDefault();
-  //   setMsg("");
-
-  //   const content = newComment.trim();
-  //   if (!content) {
-  //     setMsg("Comment cannot be empty");
-  //     return;
-  //   }
-
-  //   // TEMP DEV MODE (no authMiddleware):
-  //   if (!user?.id) {
-  //   //   setMsg("You must be logged in to comment");
-  //   //   return;
-  //       return <div style={{padding:16}}>You must be logged in to comment</div>
-  //   }
-
-  //   try {
-  //     const res = await fetch("http://localhost:5000/api/comments", {
-  //       method: "POST",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify({
-  //         postId,
-  //         content,
-  //         publisherId: user.id, // temp until authMiddleware exists
-  //       }),
-  //     });
-
-  //     const data = await res.json();
-
-  //     if (!res.ok) {
-  //       setMsg(data.message || `Error ${res.status}`);
-  //       return;
-  //     }
-
-  //     setNewComment("");
-  //     await loadPostPage();
-  //   } catch (err) {
-  //     setMsg(`Failed to add comment: ${err.message}`);
-  //   }
-  // };
 
   const handleAddComment = async (e) => {
     e.preventDefault();
@@ -111,64 +84,48 @@ export default function PostPage() {
       return;
     }
 
+    if (!user) {
+      setMsg("עליך להתחבר כדי להוסיף תגובה");
+      setSubmitting(false);
+      return;
+    }
+
     try {
       const res = await fetch(`${API_BASE_URL}/api/comments`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        // אם אצלך יש auth עם cookie/headers תוסיפי פה credentials/Authorization בהתאם
         body: JSON.stringify({
           postId,
           content,
-          publisherId: user.id,
+          publisherId: user.id, // אם בעתיד יש authMiddleware, לא צריך לשלוח את זה
         }),
       });
 
       const data = await res.json();
 
+      // מודרציה/AI: הודעה למשתמש
       if (res.status === 403 && data?.messageToUser) {
         setMsg(data.messageToUser);
-        setSubmitting(false);
         return;
       }
 
       if (!res.ok) {
         setMsg(data?.message || `Error ${res.status}`);
-        setSubmitting(false);
         return;
       }
 
-      // Success
       setNewComment("");
-      const createdComment = data.comment || data;
-      setComments((prev) => [createdComment, ...prev]);
-      setMsg("");
+
+      // הוספה מיידית לרשימה (השרת שלך כבר עושה populate ל-username? אם כן מעולה)
+      const created = data.comment || data;
+      setComments((prev) => [created, ...prev]);
     } catch {
       setMsg("Failed to add comment. Please try again.");
     } finally {
       setSubmitting(false);
     }
   };
-
-  const handleToggleLike = async () => {
-    if (!user) {
-      setMsg("You must be logged in to like posts");
-      return;
-    }
-
-    try {
-      if (isLiked) {
-        await likesService.unlikePost(postId);
-        setIsLiked(false);
-        setLikesCount((prev) => Math.max(0, prev - 1));
-      } else {
-        await likesService.likePost(postId);
-        setIsLiked(true);
-        setLikesCount((prev) => prev + 1);
-      }
-    } catch {
-      setMsg("Failed to update like. Please try again.");
-    }
-  };
-
 
   if (loading) {
     return (
@@ -185,6 +142,7 @@ export default function PostPage() {
     return (
       <div className={`mainContainer ${styles.errorContainer}`}>
         <div className={styles.errorCard}>
+
           <h2 className={styles.errorTitle}>
             {msg || "Post not found"}
           </h2>
@@ -212,20 +170,17 @@ export default function PostPage() {
     <div className="mainContainer" style={{ direction: "ltr" }}>
       {/* Post Card */}
       <div className={styles.postCard}>
-        {/* Top accent bar */}
         <div className={styles.postAccentBar}></div>
 
-        {/* Post Header */}
         <div className={styles.postHeader}>
-          <h1 className={styles.postTitle}>
-            {post.title || "Post"}
-          </h1>
-          
+          <h1 className={styles.postTitle}>{post.title || "Post"}</h1>
+
           <div className={styles.postMetadata}>
             <span className={styles.metadataItem}>
               <span className={styles.metadataIcon}>👤</span>
               {post.author || post.publisherId?.username || "Anonymous"}
             </span>
+
             {formattedDate && (
               <>
                 <span>•</span>
@@ -238,21 +193,19 @@ export default function PostPage() {
           </div>
         </div>
 
-        {/* Post Content */}
-        <div className={styles.postContent}>
-          {post.content}
-        </div>
+        <div className={styles.postContent}>{post.content}</div>
 
-        {/* Post Actions */}
         <div className={styles.postActions}>
-          <button
-            type="button"
-            onClick={handleToggleLike}
-            className={`${styles.likeButton} ${isLiked ? styles.likeButtonLiked : ""}`}
-          >
-            <span className={styles.likeIcon}>{isLiked ? "❤️" : "🤍"}</span>
-            <span>{likesCount}</span>
-          </button>
+          {/* ✅ Like button מאוחד */}
+          <LikeButton
+            postId={String(post._id ?? post.id)}
+            liked={post._localLiked}
+            likes={post.likes}
+            onChange={({ liked, likes }) =>
+              setPost((prev) => ({ ...prev, _localLiked: liked, likes }))
+            }
+            onError={(err) => setMsg(err?.message || "Failed to toggle like")}
+          />
 
           <div className={styles.commentCount}>
             <span className={styles.commentCountIcon}>💬</span>
@@ -268,8 +221,7 @@ export default function PostPage() {
           Comments ({comments.length})
         </h2>
 
-        {/* Comment Form */}
-        {user && (
+        {user ? (
           <form onSubmit={handleAddComment} className={styles.commentForm}>
             <textarea
               value={newComment}
@@ -286,17 +238,15 @@ export default function PostPage() {
               {submitting ? "Submitting..." : "Post Comment"}
             </button>
           </form>
-        )}
-
-        {!user && (
+        ) : (
           <div className={styles.loginPrompt}>
+
             <p className={styles.loginPromptText}>
               You must be logged in to add a comment
             </p>
           </div>
         )}
 
-        {/* Error Message */}
         {msg && (
           <div className={`${styles.errorMessage} ${
             msg.includes("blocked")
@@ -307,7 +257,6 @@ export default function PostPage() {
           </div>
         )}
 
-        {/* Comments List */}
         {comments.length === 0 ? (
           <div className={styles.commentsEmpty}>
             <div className={styles.commentsEmptyIcon}>💭</div>
@@ -329,6 +278,7 @@ export default function PostPage() {
                     </div>
                     {c.createdAt && (
                       <div className={styles.commentDate}>
+
                         {new Date(c.createdAt).toLocaleDateString('en-US', {
                           year: 'numeric',
                           month: 'short',
@@ -340,9 +290,7 @@ export default function PostPage() {
                     )}
                   </div>
                 </div>
-                <div className={styles.commentContent}>
-                  {c.content}
-                </div>
+                <div className={styles.commentContent}>{c.content}</div>
               </div>
             ))}
           </div>

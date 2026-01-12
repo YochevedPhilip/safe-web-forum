@@ -13,12 +13,13 @@ const CreatePost = () => {
   const API_BASE_URL = import.meta.env.VITE_SERVER_API_URL;
 
   const handlePublish = async () => {
+
     if (title.length < 3) {
-      navigate("/error", { state: { message: "Title is too short." } });
+      alert("/error", { state: { message: "Title is too short." } });
       return;
     }
     if (text.length < 10) {
-      navigate("/error", { state: { message: "Content is too short." } });
+      alert("/error", { state: { message: "Content is too short." } });
       return;
     }
 
@@ -35,16 +36,16 @@ const CreatePost = () => {
     setProgress(10);
 
     try {
-      // Simulated progressive loading
       const interval = setInterval(() => {
         setProgress((prev) => (prev < 90 ? prev + 10 : prev));
       }, 300);
 
       const res = await fetch(`${API_BASE_URL}/api/posts`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", 
-        Authorization: `Bearer ${token}`,
-      },
+        headers: { 
+          "Content-Type": "application/json", 
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({
           topicId,
           title,
@@ -53,8 +54,6 @@ const CreatePost = () => {
         }),
       });
 
-     
-
       clearInterval(interval);
       setProgress(100);
 
@@ -62,15 +61,18 @@ const CreatePost = () => {
 
       setTimeout(() => {
         if (res.status === 201) {
+          // הצלחה: הפוסט עלה (כולל מצב MEDIUM עם תמיכה)
           navigate("/post-published", {
             state: { 
               title, 
               text, 
-              anonymous: isAnonymous,
-              aiMessage: data.aiMessage // Pass AI message
+              riskLevel: data.riskLevel, 
+              categories: data.categories,
+              aiMessage: data.aiMessage 
             },
           });
         } else {
+
           // Ensure user sees a meaningful message
           const errorMessage = data.messageToUser || data.error || "Something went wrong, please try again";
           navigate("/error", {
@@ -128,6 +130,7 @@ const CreatePost = () => {
             <div className="progress-container">
               <div className="progress-bar" style={{ width: `${progress}%` }} />
             </div>
+
             <p className="progress-text">Loading... {progress}%</p>
           </div>
         )}
