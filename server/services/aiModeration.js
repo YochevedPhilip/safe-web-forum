@@ -5,7 +5,7 @@ let openai;
 export const getOpenAI = () => {
   if (!openai) {
     openai = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY
+      apiKey: process.env.OPENAI_API_KEY,
     });
   }
   return openai;
@@ -21,63 +21,60 @@ Analyze this post and respond ONLY in valid JSON format with no extra text.
 Post title: "${title}"
 Post content: "${content}"
 
+Possible statuses (CONTENT_STATUS):
+- OK: Safe to publish.
+- SENSITIVE: Needs a warm message, might express distress.
+- HARMFUL: Violates rules, cannot be published.
+
+Possible reasons (MOD_REASONS):
+'HATE', 'HARASSMENT', 'SELF_HARM', 'VIOLENCE', 'SEXUAL', 'ILLEGAL', 'SPAM', 'PERSONAL_DATA', 'OTHER'
+
+Resource List (Include the relevant link in "messageToUser" if not OK):
+- מצוקה/בדידות: ער"ן - https://www.eran.org.il/
+- מיניות/יחסים: דלת פתוחה - https://www.opendoor.org.il/
+- להט"ב: איגי - https://igy.org.il/
+- בריונות: מוקד 105 - https://www.gov.il/he/departments/105-unit
+- תקיפה מינית: מרכזי הסיוע - https://www.1202.org.il/
+
 Rules for "messageToUser" (Must be in HEBREW):
-1. If riskLevel is LOW: Write a short, positive message like "איזה כיף, הפוסט שלך פורסם!".
-2. If riskLevel is MEDIUM: Write a warm, supportive message in Hebrew. Explain that the post was flagged as sensitive because it might express distress or sadness. Tell them they are not alone and it's okay to share, but suggest reaching out to a friend or a hotline if they feel overwhelmed.
-3. If riskLevel is HIGH: Explain clearly (and kindly) that the post violates community rules (violence/harm) and cannot be published. Include support resources like Eran (1201).
+1. If status is OK: Short positive message.
+2. If status is SENSITIVE: Warm, supportive message. Suggest help and include the most relevant link from the Resource List.
+3. If status is HARMFUL: Kind but clear rejection. Include Eran (1201) and the most relevant link from the Resource List.
+
 Return JSON like this:
 {
-  "safeToPublish": Boolean,
-  "riskLevel": "LOW" | "MEDIUM" | "HIGH",
-  "categories": [],
-  "messageToUser": "..." 
+  "status": "OK" | "SENSITIVE" | "HARMFUL",
+  "reason": "ONE_OF_MOD_REASONS" | null,
+  "messageToUser": "..."
 }
 `;
 
-
-
-  const response = await ai.chat.completions.create({
-    model: "gpt-4o-mini",
-    messages: [{ role: "user", content: prompt }],
-    temperature: 0,
-  });
-
-  const contentString = response.choices[0].message.content;
-
   try {
-    const result = JSON.parse(contentString);
-  
-    // אם אין messageToUser, נוסיף הודעה ברירת מחדל
-    if (!result.messageToUser) {
-      result.messageToUser = result.safeToPublish
-        ? `הפוסט שלך תקין וניתן לפרסום.`
-        : `משתמש יקר, הפוסט שלך לא ניתן להעלות. עדכן את הפוסט ונסה שוב.`;
-    }
-  
-    return result;
-  
-  } catch (err) {
-    console.error("AI returned invalid JSON or error occurred:", err);
+    const response = await ai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [{ role: "user", content: prompt }],
+      temperature: 0,
+    });
+
+    const result = JSON.parse(response.choices[0].message.content);
+
     return {
-      safeToPublish: false,
-      riskLevel: "HIGH",
-      categories: ["ParsingError"],
-      messageToUser: `
-  היי [שם],
-  שמנו לב שאת אולי במצוקה. חשוב שתדעי שאת לא לבד ויש מי שיכול לעזור. 💛
-  
-  אם את מרגישה רע או חושבת על פגיעה בעצמך, אפשר לפנות למישהו שמבין ויכול לתמוך:
-  
-  מוקד 1201 – סיוע לנוער במצוקה
-  איגי – תמיכה לנוער מהקהילה הגאה: https://igy.org.il/
-  דלת פתוחה – תמיכה והכוונה: https://www.opendoor.org.il/
-  
-  גם אפשר לדבר עם מישהי קרובה שאת סומכת עליה – הורה, קרובת משפחה או מורה. אם את רוצה, אפשר לקבל עזרה לנסח את השיחה.
-  
-  זכרי – יש מי שמקשיב, ואת לא לבד. 🌸
-  `
+      riskLevel: result.status,          // OK | SENSITIVE | HARMFUL
+      reason: result.reason || null,     // SELF_HARM, VIOLENCE וכו'
+      messageToUser:
+        result.messageToUser ||
+        (result.status === "OK"
+          ? "הפוסט פורסם בהצלחה"
+          : "הפוסט לא אושר לפרסום"),
+    };
+  } catch (err) {
+    console.error("AI Moderation Error:", err);
+
+    return {
+      riskLevel: "HARMFUL",
+      reason: "OTHER",
+      messageToUser:
+        'היי, חלה שגיאה בבדיקת הפוסט. אם את/ה במצוקה, ניתן לפנות לער"ן ב-1201.',
     };
   }
-  
-
 };

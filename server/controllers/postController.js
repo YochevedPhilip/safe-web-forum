@@ -25,10 +25,10 @@ export const postController = {
       console.log("AI Analysis Result:", aiResult);
 
       // 2. טיפול בסיכון גבוה (HIGH) - חסימה
-      if (aiResult.riskLevel === "HIGH") {
+      if (aiResult.riskLevel === "HARMFUL") {
         return res.status(403).json({
           messageToUser: aiResult.messageToUser,
-          riskLevel: "HIGH",
+          riskLevel: "HARMFUL",
           categories: aiResult.categories,
         });
       }
@@ -36,7 +36,7 @@ export const postController = {
       // 3. מיפוי רמת הסיכון לסטטוסים של ה-Schema שלך
       // MEDIUM -> SENSITIVE (למשל 'אני עצוב')
       // LOW -> OK
-      const modStatus = aiResult.riskLevel === "MEDIUM" ? "SENSITIVE" : "OK";
+      const modStatus = aiResult.riskLevel === "SENSITIVE" ? "SENSITIVE" : "OK";
       
       // 4. יצירת הפוסט ב-Repository
       const postData = {
@@ -48,7 +48,7 @@ export const postController = {
         publishedAt: new Date(),
         moderation: {
           status: modStatus,
-          helpFlag: aiResult.riskLevel === "MEDIUM", // סימון לעזרה בפוסטים עצובים
+          helpFlag: aiResult.riskLevel === "SENSITIVE", // סימון לעזרה בפוסטים עצובים
           evaluatedAt: new Date(),
           reasons: Array.isArray(aiResult.categories) ? aiResult.categories : []
         }

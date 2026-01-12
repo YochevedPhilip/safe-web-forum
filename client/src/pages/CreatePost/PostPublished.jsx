@@ -8,7 +8,7 @@ const PostPublished = () => {
   
   const { title, text, anonymous, aiMessage, riskLevel, categories } = location.state || {};
 
-  const isSensitive = riskLevel === "MEDIUM";
+  const isSensitive = riskLevel === "SENSITIVE";
   // תנאי חדש: האם הפוסט ארוך מספיק כדי להציע עזרה (למשל מעל 50 תווים)
   const isLongEnoughForHelp = text && text.length > 50;
 

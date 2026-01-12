@@ -15,7 +15,7 @@ const CreatePost = () => {
   const handlePublish = async () => {
 
     if (title.length < 3) {
-      alert("/error", { state: { message: "Title is too short." } });
+      navigate("/error", { state: { message: "Title is too short." } });
       return;
     }
     if (text.length < 10) {
@@ -62,6 +62,8 @@ const CreatePost = () => {
       setTimeout(() => {
         if (res.status === 201) {
           // הצלחה: הפוסט עלה (כולל מצב MEDIUM עם תמיכה)
+          console.log("*****");
+          console.log(res);
           navigate("/post-published", {
             state: { 
               title, 
