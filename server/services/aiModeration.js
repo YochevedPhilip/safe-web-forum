@@ -35,8 +35,6 @@ Return JSON like this:
 `;
 
 
-  
-
 
   const response = await ai.chat.completions.create({
     model: "gpt-4o-mini",
