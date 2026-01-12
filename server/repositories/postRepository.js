@@ -1,6 +1,5 @@
 import Post from "../data/postModel.js";
 
-// פונקציות כלליות ליצירה ועדכון פוסטים
 export const createPost = async (data) => {
   const newPost = new Post(data);
   return await newPost.save();
@@ -14,12 +13,20 @@ export const getPostById = async (id) => {
   return await Post.findById(id);
 };
 
-export const updatePost = async (id, updateData) => {
-  return await Post.findByIdAndUpdate(id, updateData, { new: true, runValidators: true });
+export const updatePostByOwner = async (postId, publisherId, updateData) => {
+  return await Post.findOneAndUpdate(
+    { _id: postId, publisherId, deletedAt: null },
+    updateData,
+    { new: true, runValidators: true }
+  );
 };
 
-export const deletePost = async (id) => {
-  return await Post.findByIdAndUpdate(id, { deletedAt: new Date() }, { new: true });
+export const deletePostByOwner = async (postId, publisherId) => {
+  return await Post.findOneAndUpdate(
+    { _id: postId, publisherId, deletedAt: null },
+    { deletedAt: new Date() },
+    { new: true }
+  );
 };
 
 export const postRepository = {
@@ -28,8 +35,8 @@ export const postRepository = {
       .sort({ publishedAt: -1 })
       .limit(limit)
       .skip(skip)
-      .select("title content publishedAt createdAt stats publisherId") 
-      .populate("publisherId", "username") 
+      .select("title content publishedAt createdAt stats publisherId")
+      .populate("publisherId", "username")
       .lean();
   },
 
@@ -46,7 +53,7 @@ export const postRepository = {
       .populate("publisherId", "username")
       .lean();
   },
-    async findById(postId) {
+  async findById(postId) {
     return Post.findOne({
       _id: postId,
       deletedAt: null,
@@ -56,5 +63,6 @@ export const postRepository = {
       .populate("publisherId", "username")
       .lean();
   },
+
 
 };
