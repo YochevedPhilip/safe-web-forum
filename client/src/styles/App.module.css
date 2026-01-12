@@ -47,7 +47,7 @@
   font-family: inherit;
 }
 
-/* אפקט קו תחתון ב-hover */
+/* אפקט קו תחתון ב-hover - עובד עכשיו גם על הכפתור וגם על הקישורים */
 .appLink::after {
   content: '';
   position: absolute;
@@ -66,7 +66,6 @@
 .appLink:hover {
   opacity: 0.8;
 }
-
 /* Avatar בצד ה־Nav */
 .avatar {
   width: 45px;
@@ -165,4 +164,95 @@
   width: 100%;
   bottom: 0;
   z-index: 1000;
+}
+.searchContainer {
+  display: flex;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.2); /* שקיפות עדינה על רקע התפריט */
+  border-radius: 50px;
+  padding: 8px 20px;
+  flex: 0 1 350px; /* רוחב השורה */
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
+  margin: 0 15px;
+}
+
+.searchContainer:focus-within {
+  background-color: rgba(255, 255, 255, 0.9); /* הופך ללבן אטום כשלוחצים */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transform: translateY(-1px);
+}
+
+.searchInput {
+  border: none;
+  background: transparent;
+  width: 100%;
+  color: white; /* טקסט לבן כשהוא על הרקע הצבעוני */
+  font-family: inherit;
+  font-size: 1rem;
+  outline: none;
+}
+
+/* שינוי צבע ה-Placeholder (הטקסט הרמז) */
+.searchInput::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.searchContainer:focus-within .searchInput {
+  color: var(--luxury-dark); /* טקסט כהה כשהרקע הופך ללבן */
+}
+
+.searchContainer:focus-within .searchInput::placeholder {
+  color: #aaa;
+}
+
+.searchIcon {
+  font-size: 1.1rem;
+  opacity: 0.7;
+  cursor: default;
+}
+.topicsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 25px;
+  margin-top: 30px;
+}
+.btn-mint {
+  background-color: #4fd1c5;
+  color: white;
+  border: none;
+  /* הקטנו מ-12px/24px ל-8px/18px */
+  padding: 8px 18px; 
+  border-radius: 50px;
+  /* הקטנו את הפונט מ-1.1rem ל-0.9rem */
+  font-size: 0.9rem; 
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* צל עדין יותר */
+}
+
+.btn-mint:hover {
+  background-color: #38b2ac;
+  transform: translateY(-1px); /* קפיצה קטנה יותר */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+}
+.btn-mint:disabled {
+  background-color: #cbd5e0;
+  cursor: not-allowed;
+}/* מרווח בין הפוסטים בתוך הרשימה */
+.posts-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 30px; /* זה מה שיוצר את המרחק בין פוסט לפוסט */
+  margin-top: 30px;
+  margin-bottom: 50px;
+}
+
+/* אופציונלי: הוספת רווח נוסף לכותרת העמוד */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
 }

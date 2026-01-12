@@ -16,13 +16,13 @@ import "./styles/global.css";
 import logo from "./assets/logo.png";
 
 import { AuthContext } from "./context/AuthContext.jsx";
-
+import { useState } from "react";
 function AppLayout() {
   const { user, logout } = useContext(AuthContext);
+  const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
   const pathname = location.pathname;
-
   const username = user?.username || localStorage.getItem("username") || "User";
 
   return (
@@ -52,11 +52,20 @@ function AppLayout() {
               Logout
             </button>
           )}
-
-          {/* אווטאר */}
-          <div className={styles.avatar} title={username}>
+           {/* אווטאר */}
+           <div className={styles.avatar} title={username}>
             {username.charAt(0).toUpperCase()}
           </div>
+
+          <div className={styles.searchContainer}>
+  <input 
+    type="text" 
+    placeholder="חיפוש..." 
+    className={styles.searchInput}
+    value={searchQuery} // מחבר את מה שרואים לזיכרון
+    onChange={(e) => setSearchQuery(e.target.value)} // מעדכן את הזיכרון בכל הקלדה
+  />
+</div>
         </nav>
       </header>
 
@@ -75,6 +84,7 @@ function AppLayout() {
           <Route path="/posts/:postId/comments" element={<PostPage />} />
 
         </Routes>
+
       </main>
 
       {/* Footer */}
@@ -89,6 +99,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <AppLayout />
+      
     </BrowserRouter>
   );
 }

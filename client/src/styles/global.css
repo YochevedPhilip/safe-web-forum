@@ -66,13 +66,20 @@ a {
   direction: rtl; /* מחזיר עברית לסדר הנכון */
 }
 
-.appLink {
+/* הוספנו את המילה button כדי שהעיצוב יתפוס גם על ה-Logout */
+.appLink, button.appLink {
   position: relative;
   color: white;
   font-size: 1.1em;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
+  
+  /* אלו השורות החדשות שחייבות להיות כאן: */
+  background: none;    /* מבטל את הרקע האפור של הכפתור */
+  border: none;        /* מבטל את המסגרת של הכפתור */
+  padding: 0;          /* מבטל מרווחים מיותרים */
+  font-family: inherit; /* גורם לפונט להיות זהה לכל התפריט */
 }
 
 .appLink::after {
