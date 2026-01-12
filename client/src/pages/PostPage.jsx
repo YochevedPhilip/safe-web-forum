@@ -15,6 +15,13 @@ export default function PostPage() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
+  // ✅ added: edit/delete state
+  const [isEditing, setIsEditing] = useState(false);
+  const [editTitle, setEditTitle] = useState("");
+  const [editContent, setEditContent] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
   const storedUser = localStorage.getItem("user");
   const user = storedUser ? JSON.parse(storedUser) : null;
 
@@ -22,19 +29,9 @@ export default function PostPage() {
     import.meta.env.VITE_SERVER_API_URL || "http://localhost:5000";
 
   const normalizePost = (p) => {
-    const likes =
-      p?.likes ??
-      p?.stats?.likeCount ??
-      p?.stats?.like_count ??
-      0;
+    const likes = p?.likes ?? p?.stats?.likeCount ?? p?.stats?.like_count ?? 0;
 
-    const liked =
-      Boolean(
-        p?.likedByMe ??
-        p?._localLiked ??
-        p?.liked ??
-        p?.isLiked
-      );
+    const liked = Boolean(p?.likedByMe ?? p?._localLiked ?? p?.liked ?? p?.isLiked);
 
     return { ...p, likes, _localLiked: liked };
   };
@@ -44,7 +41,6 @@ export default function PostPage() {
     setMsg("");
 
     try {
-      // axios: אם יש 4xx/5xx לרוב יזרוק ל-catch
       const res = await postsService.getPost(postId, 10);
       const data = res.data;
 
@@ -57,6 +53,10 @@ export default function PostPage() {
 
       setPost(normalizePost(data.post));
       setComments(data.comments || []);
+
+      // ✅ added: init edit fields
+      setEditTitle(data.post?.title || "");
+      setEditContent(data.post?.content || "");
     } catch (err) {
       const serverMsg = err?.response?.data?.message;
       setMsg(serverMsg || `Failed to load post: ${err.message}`);
@@ -71,6 +71,86 @@ export default function PostPage() {
     loadPostPage();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [postId]);
+
+  // ✅ added: canEdit check (only owner sees buttons)
+  const myUserId = user?.id ?? user?.userId;
+  const postOwnerId =
+    post?.publisherId?._id ?? post?.publisherId?.id ?? post?.publisherId;
+  const canEdit = myUserId && postOwnerId && String(myUserId) === String(postOwnerId);
+
+  // ✅ added: save edit handler
+  const handleSaveEdit = async () => {
+    setMsg("");
+
+    const title = editTitle.trim();
+    const content = editContent.trim();
+
+    if (!title && !content) {
+      setMsg("Nothing to update");
+      return;
+    }
+
+    setSaving(true);
+    try {
+      const res = await postsService.updatePost(postId, { title, content });
+      const data = res.data;
+
+      const aiMessage = data?.aiMessage;
+
+      setIsEditing(false);
+      await loadPostPage();
+
+      if (aiMessage) setMsg(aiMessage);
+
+    } catch (err) {
+      const status = err?.response?.status;
+      const serverMsg = err?.response?.data?.message || err?.response?.data?.error;
+
+      if (status === 422) {
+        setMsg(serverMsg || "התוכן לא עבר בדיקת AI");
+      } else if (status === 403) {
+        setMsg(serverMsg || "אין לך הרשאה לערוך את הפוסט");
+      } else if (status === 401) {
+        setMsg(serverMsg || "עליך להתחבר כדי לערוך פוסט");
+      } else {
+        setMsg(serverMsg || `Failed to update post: ${err.message}`);
+      }
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  // ✅ added: cancel edit handler
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+    setEditTitle(post?.title || "");
+    setEditContent(post?.content || "");
+  };
+
+  // ✅ added: delete handler
+  const handleDeletePost = async () => {
+    if (!window.confirm("למחוק את הפוסט?")) return;
+
+    setMsg("");
+    setDeleting(true);
+    try {
+      await postsService.deletePost(postId);
+      navigate(-1); // or navigate("/")
+    } catch (err) {
+      const status = err?.response?.status;
+      const serverMsg = err?.response?.data?.message || err?.response?.data?.error;
+
+      if (status === 403) {
+        setMsg(serverMsg || "אין לך הרשאה למחוק את הפוסט");
+      } else if (status === 401) {
+        setMsg(serverMsg || "עליך להתחבר כדי למחוק פוסט");
+      } else {
+        setMsg(serverMsg || `Failed to delete post: ${err.message}`);
+      }
+    } finally {
+      setDeleting(false);
+    }
+  };
 
   const handleAddComment = async (e) => {
     e.preventDefault();
@@ -94,17 +174,15 @@ export default function PostPage() {
       const res = await fetch(`${API_BASE_URL}/api/comments`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        // אם אצלך יש auth עם cookie/headers תוסיפי פה credentials/Authorization בהתאם
         body: JSON.stringify({
           postId,
           content,
-          publisherId: user.id, // אם בעתיד יש authMiddleware, לא צריך לשלוח את זה
+          publisherId: user.id,
         }),
       });
 
       const data = await res.json();
 
-      // מודרציה/AI: הודעה למשתמש
       if (res.status === 403 && data?.messageToUser) {
         setMsg(data.messageToUser);
         return;
@@ -117,7 +195,6 @@ export default function PostPage() {
 
       setNewComment("");
 
-      // הוספה מיידית לרשימה (השרת שלך כבר עושה populate ל-username? אם כן מעולה)
       const created = data.comment || data;
       setComments((prev) => [created, ...prev]);
     } catch {
@@ -142,14 +219,8 @@ export default function PostPage() {
     return (
       <div className={`mainContainer ${styles.errorContainer}`}>
         <div className={styles.errorCard}>
-
-          <h2 className={styles.errorTitle}>
-            {msg || "Post not found"}
-          </h2>
-          <button
-            onClick={() => navigate("/")}
-            className={styles.backButton}
-          >
+          <h2 className={styles.errorTitle}>{msg || "Post not found"}</h2>
+          <button onClick={() => navigate("/")} className={styles.backButton}>
             Back to Home
           </button>
         </div>
@@ -158,13 +229,15 @@ export default function PostPage() {
   }
 
   const postDate = post.createdAt || post.date;
-  const formattedDate = postDate ? new Date(postDate).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
-  }) : '';
+  const formattedDate = postDate
+    ? new Date(postDate).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    })
+    : "";
 
   return (
     <div className="mainContainer" style={{ direction: "ltr" }}>
@@ -174,6 +247,55 @@ export default function PostPage() {
 
         <div className={styles.postHeader}>
           <h1 className={styles.postTitle}>{post.title || "Post"}</h1>
+
+          {/* ✅ added: edit/delete buttons (only owner) */}
+          {canEdit && (
+            <div style={{ display: "flex", gap: 8, marginLeft: "auto" }}>
+              {!isEditing ? (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => setIsEditing(true)}
+                    disabled={deleting}
+                    className={styles.commentSubmitButton}
+                    style={{ width: "auto" }}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleDeletePost}
+                    disabled={deleting}
+                    className={styles.backButton}
+                    style={{ width: "auto" }}
+                  >
+                    {deleting ? "Deleting..." : "Delete"}
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    type="button"
+                    onClick={handleSaveEdit}
+                    disabled={saving || deleting || !editContent.trim()}
+                    className={styles.commentSubmitButton}
+                    style={{ width: "auto" }}
+                  >
+                    {saving ? "Saving..." : "Save"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleCancelEdit}
+                    disabled={saving || deleting}
+                    className={styles.backButton}
+                    style={{ width: "auto" }}
+                  >
+                    Cancel
+                  </button>
+                </>
+              )}
+            </div>
+          )}
 
           <div className={styles.postMetadata}>
             <span className={styles.metadataItem}>
@@ -193,7 +315,26 @@ export default function PostPage() {
           </div>
         </div>
 
-        <div className={styles.postContent}>{post.content}</div>
+        {/* ✅ added: edit mode UI */}
+        {!isEditing ? (
+          <div className={styles.postContent}>{post.content}</div>
+        ) : (
+          <div style={{ display: "grid", gap: 10 }}>
+            <input
+              value={editTitle}
+              onChange={(e) => setEditTitle(e.target.value)}
+              placeholder="Title"
+              style={{ padding: 10, borderRadius: 8 }}
+            />
+            <textarea
+              value={editContent}
+              onChange={(e) => setEditContent(e.target.value)}
+              placeholder="Content"
+              rows={6}
+              style={{ padding: 10, borderRadius: 8 }}
+            />
+          </div>
+        )}
 
         <div className={styles.postActions}>
           {/* ✅ Like button מאוחד */}
@@ -240,19 +381,17 @@ export default function PostPage() {
           </form>
         ) : (
           <div className={styles.loginPrompt}>
-
-            <p className={styles.loginPromptText}>
-              You must be logged in to add a comment
-            </p>
+            <p className={styles.loginPromptText}>You must be logged in to add a comment</p>
           </div>
         )}
 
         {msg && (
-          <div className={`${styles.errorMessage} ${
-            msg.includes("blocked")
-              ? styles.errorMessageModeration
-              : styles.errorMessageGeneric
-          }`}>
+          <div
+            className={`${styles.errorMessage} ${msg.includes("blocked")
+                ? styles.errorMessageModeration
+                : styles.errorMessageGeneric
+              }`}
+          >
             {msg}
           </div>
         )}
@@ -260,9 +399,7 @@ export default function PostPage() {
         {comments.length === 0 ? (
           <div className={styles.commentsEmpty}>
             <div className={styles.commentsEmptyIcon}>💭</div>
-            <p className={styles.commentsEmptyText}>
-              No comments yet. Be the first to comment!
-            </p>
+            <p className={styles.commentsEmptyText}>No comments yet. Be the first to comment!</p>
           </div>
         ) : (
           <div className={styles.commentsList}>
@@ -278,13 +415,12 @@ export default function PostPage() {
                     </div>
                     {c.createdAt && (
                       <div className={styles.commentDate}>
-
-                        {new Date(c.createdAt).toLocaleDateString('en-US', {
-                          year: 'numeric',
-                          month: 'short',
-                          day: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit'
+                        {new Date(c.createdAt).toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
                         })}
                       </div>
                     )}
