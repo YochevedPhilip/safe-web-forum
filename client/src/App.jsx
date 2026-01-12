@@ -15,13 +15,13 @@ import "./styles/global.css";
 import logo from "./assets/logo.png";
 
 import { AuthContext } from "./context/AuthContext.jsx";
-
+import { useState } from "react";
 function AppLayout() {
   const { user, logout } = useContext(AuthContext);
+  const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
   const pathname = location.pathname;
-
   const username = user?.username || localStorage.getItem("username") || "User";
 
   return (
@@ -50,28 +50,43 @@ function AppLayout() {
               Logout
             </button>
           )}
-
-          {/* אווטאר */}
-          <div className={styles.avatar} title={username}>
+           {/* אווטאר */}
+           <div className={styles.avatar} title={username}>
             {username.charAt(0).toUpperCase()}
           </div>
+
+          <div className={styles.searchContainer}>
+  <input 
+    type="text" 
+    placeholder="חיפוש..." 
+    className={styles.searchInput}
+    value={searchQuery} // מחבר את מה שרואים לזיכרון
+    onChange={(e) => setSearchQuery(e.target.value)} // מעדכן את הזיכרון בכל הקלדה
+  />
+</div>
         </nav>
       </header>
 
       {/* Main */}
       <main className={styles.main}>
-        <Routes>
-          <Route path="/" element={user ? <Home /> : <Navigate to="/login" />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/topics/:topicId" element={<TopicPage />} />
-          <Route path="/topics/:topicId/create-post" element={<CreatePost />} />
-          <Route path="/post-published" element={<PostPublished />} />
-          <Route path="/error" element={<ErrorPost />} />
-          <Route path="/posts/:postId" element={<PostPage />} />
-          <Route path="/posts/:postId/comments" element={<PostPage />} />
-
-        </Routes>
+      <main className={styles.main}>
+  <Routes>
+    {/* דף הבית - מקבל חיפוש */}
+    <Route path="/" element={user ? <Home searchQuery={searchQuery} /> : <Navigate to="/login" />} />
+    
+    <Route path="/login" element={<Login />} />
+    <Route path="/register" element={<Register />} />
+    
+    {/* דף נושא - השארנו רק שורה אחת שמעבירה את החיפוש */}
+    <Route path="/topics/:topicId" element={<TopicPage searchQuery={searchQuery} />} />
+    
+    <Route path="/topics/:topicId/create-post" element={<CreatePost />} />
+    <Route path="/post-published" element={<PostPublished />} />
+    <Route path="/error" element={<ErrorPost />} />
+    <Route path="/posts/:postId" element={<PostPage />} />
+    <Route path="/posts/:postId/comments" element={<PostPage />} />
+  </Routes>
+</main>
       </main>
 
       {/* Footer */}
@@ -86,6 +101,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <AppLayout />
+      
     </BrowserRouter>
   );
 }

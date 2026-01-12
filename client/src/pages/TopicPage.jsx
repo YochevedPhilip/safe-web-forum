@@ -6,11 +6,10 @@ import PostCard from "../components/PostCard";
 import { topicsService } from "../services/topicsService";
 import { postsService } from "../services/postsService";
 import { likesService } from "../services/likesService";
-
+import styles from "../styles/App.module.css";
 const LIMIT = 10;
 
-const TopicPage = ({ searchQuery }) => {
-  const { topicId } = useParams();
+const TopicPage = ({ searchQuery = "" }) => {  const { topicId } = useParams();
   const navigate = useNavigate();
 
   const [topicTitle, setTopicTitle] = useState("");
@@ -146,9 +145,13 @@ const TopicPage = ({ searchQuery }) => {
 
           {!searchQuery && hasMore && (
             <div className="load-more-wrapper">
-              <button className="btn-mint" onClick={loadMore} disabled={loadingMore}>
-                {loadingMore ? "טוען עוד..." : "טען פוסטים נוספים"}
-              </button>
+              <button 
+  className={styles['btn-mint']} // בגלל שיש מקף בשם, משתמשים בסוגריים מרובעים
+  onClick={loadMore} 
+  disabled={loadingMore}
+>
+  {loadingMore ? "טוען עוד..." : "טען פוסטים נוספים"}
+</button>
             </div>
           )}
         </>

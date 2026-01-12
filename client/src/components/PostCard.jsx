@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-
+import "../styles/global.css";
 export default function PostCard({ post, onOpen, onToggleLike }) {
   const postId = String(post.id ?? post._id);
 
