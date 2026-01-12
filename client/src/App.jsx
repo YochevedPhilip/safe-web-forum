@@ -36,7 +36,7 @@ function AppLayout() {
     <div className="app">
       {/* Header */}
       <header className={styles.appHeader}>
-        {/* לוגו בצד שמאל */}
+        {/* Logo on the left */}
         <Link to="/" className={styles.logoLink} onClick={() => setMobileMenuOpen(false)}>
           <img src={logo} alt="SafeTalk" className={styles.appLogo} />
         </Link>
@@ -54,7 +54,7 @@ function AppLayout() {
           </span>
         </button>
 
-        {/* תפריט ואווטאר בצד ימין */}
+        {/* Menu and avatar on the right */}
         <nav className={`${styles.appNav} ${mobileMenuOpen ? styles.appNavOpen : ''}`}>
           <div className={styles.navLinks}>
             {user && pathname !== "/" && (
@@ -88,14 +88,14 @@ function AppLayout() {
             </svg>
             <input 
               type="text" 
-              placeholder="חיפוש..." 
+              placeholder="Search..." 
               className={styles.searchInput}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
 
-          {/* אווטאר */}
+          {/* Avatar */}
           {user && (
             <div className={styles.avatar} title={username}>
               {username.charAt(0).toUpperCase()}

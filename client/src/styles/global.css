@@ -1,4 +1,4 @@
-/* --- משתנים גלובליים --- */
+/* --- Global Variables --- */
 :root {
   --mint-soft: #76c893;
   --primary-purple: #6A2D9A;
@@ -12,7 +12,7 @@
   --peach-soft: var(--accent-teal);
 }
 
-/* איפוס בסיסי */
+/* Basic Reset */
 * {
   box-sizing: border-box;
 }
@@ -24,8 +24,8 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background-color: var(--bg-pink-pale);
   color: var(--luxury-dark);
-  direction: rtl;
-  text-align: right;
+  direction: ltr;
+  text-align: left;
 }
 
 code {
@@ -42,7 +42,7 @@ a {
   justify-content: space-between;
   align-items: center;
   padding: 10px 60px;
-  direction: ltr; /* הלוגו נשאר בשמאל */
+  direction: ltr; /* Logo stays on the left */
   background: linear-gradient(135deg, rgba(106, 45, 154, 0.85), rgba(45, 106, 154, 0.8));
   border-radius: 0 0 50px 50px;
   box-shadow: 0 4px 15px rgba(0,0,0,0.1);
@@ -63,10 +63,10 @@ a {
   display: flex;
   gap: 30px;
   align-items: center;
-  direction: rtl; /* מחזיר עברית לסדר הנכון */
+  direction: ltr; /* English text order */
 }
 
-/* הוספנו את המילה button כדי שהעיצוב יתפוס גם על ה-Logout */
+/* Added button word so styling applies to Logout button as well */
 .appLink, button.appLink {
   position: relative;
   color: white;
@@ -75,11 +75,11 @@ a {
   cursor: pointer;
   transition: all 0.3s ease;
   
-  /* אלו השורות החדשות שחייבות להיות כאן: */
-  background: none;    /* מבטל את הרקע האפור של הכפתור */
-  border: none;        /* מבטל את המסגרת של הכפתור */
-  padding: 0;          /* מבטל מרווחים מיותרים */
-  font-family: inherit; /* גורם לפונט להיות זהה לכל התפריט */
+  /* These new lines must be here: */
+  background: none;    /* Removes gray button background */
+  border: none;        /* Removes button border */
+  padding: 0;          /* Removes unnecessary spacing */
+  font-family: inherit; /* Makes font same as rest of menu */
 }
 
 .appLink::after {
@@ -88,7 +88,7 @@ a {
   width: 0;
   height: 2px;
   bottom: -5px;
-  right: 0;
+  left: 0;
   background-color: white;
   transition: width 0.3s ease;
 }
@@ -101,7 +101,7 @@ a {
   opacity: 0.8;
 }
 
-/* Avatar בצד ה־Nav */
+/* Avatar on Nav side */
 .avatar {
   width: 45px;
   height: 45px;
@@ -224,7 +224,7 @@ a {
   -webkit-box-orient: vertical;
   overflow: hidden;
   display: box;
-  line-clamp: 3; /* סטנדרטי לעתיד */
+  line-clamp: 3; /* Standard for future */
   box-orient: vertical;
   color: #555;
   font-size: 1rem;

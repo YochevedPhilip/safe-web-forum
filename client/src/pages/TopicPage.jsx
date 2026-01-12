@@ -82,7 +82,7 @@ const TopicPage = ({ searchQuery = "" }) => {
       if (wasLiked) await likesService.unlikePost(postId);
       else await likesService.likePost(postId);
     } catch (err) {
-      // Rollback אם נכשל
+      // Rollback if failed
       setPosts((prev) =>
         prev.map((p) => {
           const pid = String(p.id ?? p._id);
@@ -120,7 +120,7 @@ const TopicPage = ({ searchQuery = "" }) => {
       <div className={topicStyles.container}>
         <div className={topicStyles.loadingState}>
           <div className={topicStyles.loadingSpinner}></div>
-          <div className={topicStyles.loadingText}>טוען פוסטים...</div>
+          <div className={topicStyles.loadingText}>Loading posts...</div>
         </div>
       </div>
     );
@@ -131,7 +131,7 @@ const TopicPage = ({ searchQuery = "" }) => {
       <div className={topicStyles.container}>
         <div className={topicStyles.errorState}>
           <div className={topicStyles.errorIcon}>⚠️</div>
-          <h2 className={topicStyles.errorTitle}>אופס!</h2>
+          <h2 className={topicStyles.errorTitle}>Oops!</h2>
           <p className={topicStyles.errorText}>{error}</p>
         </div>
       </div>
@@ -141,13 +141,13 @@ const TopicPage = ({ searchQuery = "" }) => {
   return (
     <div className={topicStyles.container}>
       <div className={topicStyles.header}>
-        <h1 className={topicStyles.title}>{topicTitle || "נושא"}</h1>
+        <h1 className={topicStyles.title}>{topicTitle || "Topic"}</h1>
         <button 
           className={topicStyles.createButton} 
           onClick={() => navigate(`/topics/${topicId}/create-post`)}
-          aria-label="צור פוסט חדש"
+          aria-label="Create new post"
         >
-          פוסט חדש
+          New Post
         </button>
       </div>
 
@@ -155,12 +155,12 @@ const TopicPage = ({ searchQuery = "" }) => {
         <div className={topicStyles.emptyState}>
           <div className={topicStyles.emptyStateIcon}>📝</div>
           <h2 className={topicStyles.emptyStateTitle}>
-            {searchQuery ? "לא נמצאו פוסטים" : "עדיין אין פוסטים"}
+            {searchQuery ? "No posts found" : "No posts yet"}
           </h2>
           <p className={topicStyles.emptyStateText}>
             {searchQuery 
-              ? `לא נמצאו פוסטים שתואמים ל-"${searchQuery}"` 
-              : "עדיין אין פוסטים בנושא זה. תהיה הראשון לפרסם!"}
+              ? `No posts found matching "${searchQuery}"` 
+              : "There are no posts in this topic yet. Be the first to post!"}
           </p>
         </div>
       ) : (
@@ -182,9 +182,9 @@ const TopicPage = ({ searchQuery = "" }) => {
                 className={topicStyles.loadMoreButton}
                 onClick={loadMore} 
                 disabled={loadingMore}
-                aria-label="טען פוסטים נוספים"
+                aria-label="Load more posts"
               >
-                {loadingMore ? "טוען עוד..." : "טען פוסטים נוספים"}
+                {loadingMore ? "Loading more..." : "Load more posts"}
               </button>
             </div>
           )}

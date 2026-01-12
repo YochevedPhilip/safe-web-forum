@@ -5,25 +5,25 @@ export default function PostCard({ post, onOpen, onToggleLike }) {
 
   return (
     <div
-      className="post-card" // משתמש בעיצוב היוקרתי מה-CSS
+      className="post-card" // Uses the elegant styling from CSS
       onClick={() => onOpen(postId)}
     >
       <div className="post-header">
         <h3 className="post-title">{post.title}</h3>
       </div>
 
-      {/* תוכן הפוסט */}
+      {/* Post content */}
       <p className="post-content">{post.content}</p>
 
-      {/* מחבר ותאריך */}
+      {/* Author and date */}
       <div style={{ marginBottom: '10px' }}>
         <small className="post-author">
-          פורסם על ידי {post.author ?? "אנונימי"} ·{" "}
-          {post.date ? new Date(post.date).toLocaleDateString('he-IL') : ""}
+          Published by {post.author ?? "Anonymous"} ·{" "}
+          {post.date ? new Date(post.date).toLocaleDateString('en-US') : ""}
         </small>
       </div>
 
-      {/* Footer: לייקים ותגובות */}
+      {/* Footer: likes and comments */}
       <div className="post-footer">
         <div style={{ display: "flex", gap: "20px" }}>
           <button

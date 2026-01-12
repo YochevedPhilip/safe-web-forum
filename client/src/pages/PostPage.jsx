@@ -175,7 +175,7 @@ export default function PostPage() {
       <div className={`mainContainer ${styles.loadingContainer}`}>
         <div className={styles.loadingContent}>
           <div className={styles.loadingSpinner}></div>
-          טוען...
+          Loading...
         </div>
       </div>
     );
@@ -186,13 +186,13 @@ export default function PostPage() {
       <div className={`mainContainer ${styles.errorContainer}`}>
         <div className={styles.errorCard}>
           <h2 className={styles.errorTitle}>
-            {msg || "הפוסט לא נמצא"}
+            {msg || "Post not found"}
           </h2>
           <button
             onClick={() => navigate("/")}
             className={styles.backButton}
           >
-            חזרה לדף הבית
+            Back to Home
           </button>
         </div>
       </div>
@@ -200,7 +200,7 @@ export default function PostPage() {
   }
 
   const postDate = post.createdAt || post.date;
-  const formattedDate = postDate ? new Date(postDate).toLocaleDateString('he-IL', {
+  const formattedDate = postDate ? new Date(postDate).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
@@ -209,7 +209,7 @@ export default function PostPage() {
   }) : '';
 
   return (
-    <div className="mainContainer" style={{ direction: "rtl" }}>
+    <div className="mainContainer" style={{ direction: "ltr" }}>
       {/* Post Card */}
       <div className={styles.postCard}>
         {/* Top accent bar */}
@@ -224,7 +224,7 @@ export default function PostPage() {
           <div className={styles.postMetadata}>
             <span className={styles.metadataItem}>
               <span className={styles.metadataIcon}>👤</span>
-              {post.author || post.publisherId?.username || "אנונימי"}
+              {post.author || post.publisherId?.username || "Anonymous"}
             </span>
             {formattedDate && (
               <>
@@ -265,7 +265,7 @@ export default function PostPage() {
       <div className={styles.commentsSection}>
         <h2 className={styles.commentsTitle}>
           <span>💬</span>
-          תגובות ({comments.length})
+          Comments ({comments.length})
         </h2>
 
         {/* Comment Form */}
@@ -274,7 +274,7 @@ export default function PostPage() {
             <textarea
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
-              placeholder="כתוב תגובה..."
+              placeholder="Write a comment..."
               rows={4}
               className={styles.commentTextarea}
             />
@@ -283,7 +283,7 @@ export default function PostPage() {
               disabled={submitting || !newComment.trim()}
               className={styles.commentSubmitButton}
             >
-              {submitting ? "שולח..." : "פרסם תגובה"}
+              {submitting ? "Submitting..." : "Post Comment"}
             </button>
           </form>
         )}
@@ -291,7 +291,7 @@ export default function PostPage() {
         {!user && (
           <div className={styles.loginPrompt}>
             <p className={styles.loginPromptText}>
-              עליך להתחבר כדי להוסיף תגובה
+              You must be logged in to add a comment
             </p>
           </div>
         )}
@@ -299,7 +299,7 @@ export default function PostPage() {
         {/* Error Message */}
         {msg && (
           <div className={`${styles.errorMessage} ${
-            msg.includes("נחסם") || msg.includes("blocked")
+            msg.includes("blocked")
               ? styles.errorMessageModeration
               : styles.errorMessageGeneric
           }`}>
@@ -312,7 +312,7 @@ export default function PostPage() {
           <div className={styles.commentsEmpty}>
             <div className={styles.commentsEmptyIcon}>💭</div>
             <p className={styles.commentsEmptyText}>
-              עדיין אין תגובות. היה הראשון להגיב!
+              No comments yet. Be the first to comment!
             </p>
           </div>
         ) : (
@@ -325,11 +325,11 @@ export default function PostPage() {
                   </div>
                   <div>
                     <div className={styles.commentAuthor}>
-                      {c.publisherId?.username || "אנונימי"}
+                      {c.publisherId?.username || "Anonymous"}
                     </div>
                     {c.createdAt && (
                       <div className={styles.commentDate}>
-                        {new Date(c.createdAt).toLocaleDateString('he-IL', {
+                        {new Date(c.createdAt).toLocaleDateString('en-US', {
                           year: 'numeric',
                           month: 'short',
                           day: 'numeric',

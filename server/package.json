@@ -6,7 +6,8 @@
   "scripts": {
     "start": "eslint . && node server",
     "dev": "nodemon server",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "seed": "node seeds/seedDemoData.js"
   },
   "keywords": [],
   "author": "",
