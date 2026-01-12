@@ -20,52 +20,87 @@ import { useState } from "react";
 function AppLayout() {
   const { user, logout } = useContext(AuthContext);
   const [searchQuery, setSearchQuery] = useState("");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const pathname = location.pathname;
   const username = user?.username || localStorage.getItem("username") || "User";
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+    setMobileMenuOpen(false);
+  };
 
   return (
     <div className="app">
       {/* Header */}
       <header className={styles.appHeader}>
         {/* לוגו בצד שמאל */}
-        <Link to="/">
+        <Link to="/" className={styles.logoLink} onClick={() => setMobileMenuOpen(false)}>
           <img src={logo} alt="SafeTalk" className={styles.appLogo} />
         </Link>
 
+        {/* Mobile Menu Toggle */}
+        <button 
+          className={styles.mobileMenuToggle}
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          aria-label="Toggle menu"
+        >
+          <span className={mobileMenuOpen ? styles.hamburgerOpen : styles.hamburger}>
+            <span></span>
+            <span></span>
+            <span></span>
+          </span>
+        </button>
+
         {/* תפריט ואווטאר בצד ימין */}
-        <nav className={styles.appNav}>
-          {user && pathname !== "/" && <Link to="/" className={styles.appLink}>Home</Link>}
-          {user && pathname !== "/about" && <Link to="/about" className={styles.appLink}>About Us</Link>}
-          {!user && pathname !== "/login" && <Link to="/login" className={styles.appLink}>Login</Link>}
-          {!user && pathname !== "/register" && <Link to="/register" className={styles.appLink}>Register</Link>}
-          {user && (
-            <button
-              type="button"
-              className={styles.appLink}
-              onClick={() => {
-                logout();
-                navigate("/login");
-              }}
-            >
-              Logout
-            </button>
-          )}
-           {/* אווטאר */}
-           <div className={styles.avatar} title={username}>
-            {username.charAt(0).toUpperCase()}
+        <nav className={`${styles.appNav} ${mobileMenuOpen ? styles.appNavOpen : ''}`}>
+          <div className={styles.navLinks}>
+            {user && pathname !== "/" && (
+              <Link to="/" className={styles.appLink} onClick={() => setMobileMenuOpen(false)}>Home</Link>
+            )}
+            {user && pathname !== "/about" && (
+              <Link to="/about" className={styles.appLink} onClick={() => setMobileMenuOpen(false)}>About Us</Link>
+            )}
+            {!user && pathname !== "/login" && (
+              <Link to="/login" className={styles.appLink} onClick={() => setMobileMenuOpen(false)}>Login</Link>
+            )}
+            {!user && pathname !== "/register" && (
+              <Link to="/register" className={styles.appLink} onClick={() => setMobileMenuOpen(false)}>Register</Link>
+            )}
+            {user && (
+              <button
+                type="button"
+                className={styles.appLink}
+                onClick={handleLogout}
+              >
+                Logout
+              </button>
+            )}
           </div>
 
+          {/* Search Container */}
           <div className={styles.searchContainer}>
-  <input 
-    type="text" 
-    placeholder="חיפוש..." 
-    className={styles.searchInput}
-    value={searchQuery} // מחבר את מה שרואים לזיכרון
-    onChange={(e) => setSearchQuery(e.target.value)} // מעדכן את הזיכרון בכל הקלדה
-  />
-</div>
+            <svg className={styles.searchIcon} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <path d="m21 21-4.35-4.35"></path>
+            </svg>
+            <input 
+              type="text" 
+              placeholder="חיפוש..." 
+              className={styles.searchInput}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+
+          {/* אווטאר */}
+          {user && (
+            <div className={styles.avatar} title={username}>
+              {username.charAt(0).toUpperCase()}
+            </div>
+          )}
         </nav>
       </header>
 

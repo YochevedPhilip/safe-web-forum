@@ -6,10 +6,11 @@ import PostCard from "../components/PostCard";
 import { topicsService } from "../services/topicsService";
 import { postsService } from "../services/postsService";
 import { likesService } from "../services/likesService";
-import styles from "../styles/App.module.css";
+import topicStyles from "../styles/TopicPage.module.css";
 const LIMIT = 10;
 
-const TopicPage = ({ searchQuery = "" }) => {  const { topicId } = useParams();
+const TopicPage = ({ searchQuery = "" }) => {
+  const { topicId } = useParams();
   const navigate = useNavigate();
 
   const [topicTitle, setTopicTitle] = useState("");
@@ -114,25 +115,57 @@ const TopicPage = ({ searchQuery = "" }) => {  const { topicId } = useParams();
     );
   });
 
-  if (loading) return <div className="mainContainer"><div className="loading-state">טוען פוסטים...</div></div>;
-  if (error) return <div className="mainContainer"><div className="message-card"><h2>אופס!</h2><p>{error}</p></div></div>;
+  if (loading) {
+    return (
+      <div className={topicStyles.container}>
+        <div className={topicStyles.loadingState}>
+          <div className={topicStyles.loadingSpinner}></div>
+          <div className={topicStyles.loadingText}>טוען פוסטים...</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className={topicStyles.container}>
+        <div className={topicStyles.errorState}>
+          <div className={topicStyles.errorIcon}>⚠️</div>
+          <h2 className={topicStyles.errorTitle}>אופס!</h2>
+          <p className={topicStyles.errorText}>{error}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="mainContainer page-bottom-padding">
-      <div className="page-header">
-        <h1 className="page-title">{topicTitle || "נושא"}</h1>
-        <button className="btn-pink btn-small" onClick={() => navigate(`/topics/${topicId}/create-post`)}>
-          + פוסט חדש
+    <div className={topicStyles.container}>
+      <div className={topicStyles.header}>
+        <h1 className={topicStyles.title}>{topicTitle || "נושא"}</h1>
+        <button 
+          className={topicStyles.createButton} 
+          onClick={() => navigate(`/topics/${topicId}/create-post`)}
+          aria-label="צור פוסט חדש"
+        >
+          פוסט חדש
         </button>
       </div>
 
       {filteredPosts.length === 0 ? (
-        <div className="message-card">
-          <p>{searchQuery ? `לא נמצאו פוסטים שתואמים ל-"${searchQuery}"` : "עדיין אין פוסטים בנושא זה."}</p>
+        <div className={topicStyles.emptyState}>
+          <div className={topicStyles.emptyStateIcon}>📝</div>
+          <h2 className={topicStyles.emptyStateTitle}>
+            {searchQuery ? "לא נמצאו פוסטים" : "עדיין אין פוסטים"}
+          </h2>
+          <p className={topicStyles.emptyStateText}>
+            {searchQuery 
+              ? `לא נמצאו פוסטים שתואמים ל-"${searchQuery}"` 
+              : "עדיין אין פוסטים בנושא זה. תהיה הראשון לפרסם!"}
+          </p>
         </div>
       ) : (
         <>
-          <div className="posts-stack">
+          <div className={topicStyles.postsContainer}>
             {filteredPosts.map((post) => (
               <PostCard
                 key={String(post.id ?? post._id)}
@@ -144,14 +177,15 @@ const TopicPage = ({ searchQuery = "" }) => {  const { topicId } = useParams();
           </div>
 
           {!searchQuery && hasMore && (
-            <div className="load-more-wrapper">
+            <div className={topicStyles.loadMoreWrapper}>
               <button 
-  className={styles['btn-mint']} // בגלל שיש מקף בשם, משתמשים בסוגריים מרובעים
-  onClick={loadMore} 
-  disabled={loadingMore}
->
-  {loadingMore ? "טוען עוד..." : "טען פוסטים נוספים"}
-</button>
+                className={topicStyles.loadMoreButton}
+                onClick={loadMore} 
+                disabled={loadingMore}
+                aria-label="טען פוסטים נוספים"
+              >
+                {loadingMore ? "טוען עוד..." : "טען פוסטים נוספים"}
+              </button>
             </div>
           )}
         </>
