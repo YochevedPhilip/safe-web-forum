@@ -34,7 +34,6 @@ export default function PostPage() {
         return;
       }
 
-      // ✅ normalize for LikeButton usage
       const p = data.post;
       setPost({
         ...p,

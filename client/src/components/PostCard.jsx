@@ -6,7 +6,7 @@ export default function PostCard({ post, onOpen, onToggleLike }) {
 
   return (
     <div
-      className="post-card" // משתמש בעיצוב היוקרתי מה-CSS
+      className="post-card" 
       onClick={() => onOpen(postId)}
     >
       <div className="post-header">
@@ -24,7 +24,7 @@ export default function PostCard({ post, onOpen, onToggleLike }) {
         </small>
       </div>
 
-      {/* Footer: לייקים ותגובות */}
+     
       <div className="post-footer">
         <div style={{ display: "flex", gap: "20px" }}>
           <LikeButton
