@@ -36,7 +36,7 @@ export default function AboutUsPage() {
           color: "var(--luxury-dark)",
           marginBottom: "20px"
         }}>
-          אודותינו
+          About Us
         </h1>
         <p style={{ 
           fontSize: "1.2rem", 
@@ -45,8 +45,8 @@ export default function AboutUsPage() {
           margin: "0 auto",
           lineHeight: "1.8"
         }}>
-          אנחנו צוות של 4 מפתחים שמחויבים ליצור פלטפורמה בטוחה ותומכת לשיתוף מחשבות וחוויות.
-          המטרה שלנו היא לספק מקום שבו כל אחד יכול להביע את עצמו בחופשיות ובביטחון.
+          We are a team of 4 developers committed to creating a safe and supportive platform for sharing thoughts and experiences.
+          Our goal is to provide a place where everyone can express themselves freely and securely.
         </p>
       </div>
 

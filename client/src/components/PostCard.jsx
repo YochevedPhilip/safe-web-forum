@@ -17,12 +17,10 @@ export default function PostCard({ post, onOpen, onToggleLike }) {
 
       <div style={{ marginBottom: '10px' }}>
         <small className="post-author">
-          פורסם על ידי {post.author ?? "אנונימי"} ·{" "}
-          {post.date ? new Date(post.date).toLocaleDateString('he-IL') : ""}
+          Published by {post.author ?? "Anonymous"} ·{" "}
+          {post.date ? new Date(post.date).toLocaleDateString('en-US') : ""}
         </small>
       </div>
-
-     
       <div className="post-footer">
         <div style={{ display: "flex", gap: "20px" }}>
           <LikeButton

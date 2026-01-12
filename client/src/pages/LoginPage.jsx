@@ -9,7 +9,7 @@ const Login = () => {
   const navigate = useNavigate();
   const { setUser } = useContext(AuthContext);
 
-  // עדיף להשתמש במשתנה סביבתי במקום כתובת קשיחה
+  // Prefer using environment variable instead of hardcoded address
   const API_BASE_URL = import.meta.env.VITE_SERVER_API_URL;
 
   const handleSubmit = async (e) => {
@@ -23,7 +23,7 @@ const Login = () => {
 
       const data = await res.json(); 
       if (!res.ok) {
-        setMsg(data.message || `שגיאה: ${res.status}`);
+        setMsg(data.message || `Error: ${res.status}`);
         return;
       }
 
@@ -31,10 +31,10 @@ const Login = () => {
       localStorage.setItem("user", JSON.stringify(data.user));
       setUser(data.user);
 
-      // מעבר לדף הבית לאחר הצלחה
+      // Navigate to home page after success
       navigate("/");
     } catch (err) {
-      setMsg("שגיאה בחיבור: " + err.message);
+      setMsg("Connection error: " + err.message);
     }
   };
 
@@ -42,17 +42,17 @@ const Login = () => {
     <div className="mainContainer">
       <div className="form-card">
         <h1 className="page-title" style={{ textAlign: 'center', marginBottom: '10px' }}>
-          ברוכים הבאים
+          Welcome
         </h1>
         <p style={{ textAlign: 'center', color: '#666', marginBottom: '30px' }}>
-          התחברו לחשבון שלכם או צרו אחד חדש
+          Sign in to your account or create a new one
         </p>
 
         <form onSubmit={handleSubmit}>
           <input 
             type="email"
             className="form-control" 
-            placeholder="אימייל" 
+            placeholder="Email" 
             value={email} 
             onChange={(e) => setEmail(e.target.value)} 
             required
@@ -60,7 +60,7 @@ const Login = () => {
           
           <input 
             className="form-control" 
-            placeholder="סיסמה" 
+            placeholder="Password" 
             type="password" 
             value={password} 
             onChange={(e) => setPassword(e.target.value)} 
@@ -68,20 +68,20 @@ const Login = () => {
           />
 
           <button type="submit" className="btn-pink">
-            התחברות
+            Sign In
           </button>
           
           <div style={{ marginTop: '20px', textAlign: 'center' }}>
-            <span style={{ color: '#666' }}>עדיין אין לכם חשבון? </span>
+            <span style={{ color: '#666' }}>Don't have an account yet? </span>
             <Link to="/register" style={{ color: 'var(--mint-soft)', fontWeight: 'bold' }}>
-              הרשמה כאן
+              Sign up here
             </Link>
           </div>
 
           {msg && (
             <p style={{ 
               marginTop: '20px', 
-              color: msg.includes('שגיאה') ? '#ff6b6b' : 'var(--mint-soft)',
+              color: msg.includes('Error') || msg.includes('error') ? '#ff6b6b' : 'var(--mint-soft)',
               fontWeight: '600'
             }}>
               {msg}

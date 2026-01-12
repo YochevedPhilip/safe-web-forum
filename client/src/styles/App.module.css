@@ -3,86 +3,148 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 60px;
+  padding: 15px 60px;
+  min-height: 90px;
   
-  /* השורה ששומרת על הלוגו בשמאל בלי לשבור את העיצוב */
+  /* Line that keeps logo on left without breaking design */
   direction: ltr; 
   
-  background: linear-gradient(135deg, rgba(106, 45, 154, 0.85), rgba(45, 106, 154, 0.8));
+  background: linear-gradient(135deg, rgba(106, 45, 154, 0.95), rgba(45, 106, 154, 0.9));
+  backdrop-filter: blur(10px);
   border-radius: 0 0 50px 50px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08);
   position: sticky;
   top: 0;
   z-index: 1000;
+  transition: all 0.3s ease;
 }
 
-/* בגלל שהפכנו את ה-Header ל-LTR, אנחנו צריכים להחזיר את הטקסט בתפריט שיראה טוב */
+.appHeader::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 100%);
+  border-radius: 0 0 50px 50px;
+  pointer-events: none;
+}
+
+/* Since we made Header LTR, we need to set text order in menu to look good */
 .appNav {
   display: flex;
-  gap: 30px;
+  gap: 20px;
   align-items: center;
-  direction: rtl; /* מחזיר את העברית לסדר הנכון בתוך התפריט */
+  direction: ltr; /* English text order in menu */
+  flex-wrap: nowrap;
+  flex-shrink: 0;
+}
+
+.logoLink {
+  display: flex;
+  align-items: center;
+  transition: transform 0.3s ease;
+  z-index: 1001;
+}
+
+.logoLink:hover {
+  transform: scale(1.05);
 }
 
 .appLogo {
-  height: 120px;
+  height: 100px;
   width: auto;
   object-fit: contain;
-  background: transparent; /* מוודא שאין רקע שהוגדר בטעות */
-  mix-blend-mode: multiply; /* טריק: מעלים רקע לבן על רקע צבעוני (עובד לפעמים) */
+  background: transparent;
+  mix-blend-mode: multiply;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+  transition: all 0.3s ease;
 }
 
-/* --- קישורים ותפריט --- */
+.navLinks {
+  display: flex;
+  gap: 25px;
+  align-items: center;
+  flex-wrap: nowrap;
+  flex-shrink: 0;
+}
+
+/* --- Links and Menu --- */
 .appLink {
   position: relative;
   color: white;
-  font-size: 1.1em;
+  font-size: 1.05em;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
   background: none;
   border: none;
-  padding: 0;
+  padding: 8px 16px;
   font-family: inherit;
+  border-radius: 25px;
+  white-space: nowrap;
 }
 
-/* אפקט קו תחתון ב-hover - עובד עכשיו גם על הכפתור וגם על הקישורים */
+/* Underline effect on hover - works on both button and links */
 .appLink::after {
   content: '';
   position: absolute;
   width: 0;
   height: 2px;
-  bottom: -5px;
-  right: 0;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
   background-color: white;
   transition: width 0.3s ease;
-}
-
-.appLink:hover::after {
-  width: 100%;
+  border-radius: 2px;
 }
 
 .appLink:hover {
-  opacity: 0.8;
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
-/* Avatar בצד ה־Nav */
+
+.appLink:hover::after {
+  width: calc(100% - 32px);
+}
+
+.appLink:active {
+  transform: translateY(0);
+}
+/* Avatar on Nav side */
 .avatar {
-  width: 45px;
-  height: 45px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
-  background-color: #2DB3C0;
+  background: linear-gradient(135deg, #2DB3C0, #38b2ac);
   color: white;
   display: grid;
   place-items: center;
   font-weight: bold;
-  font-size: 1.2rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  border: 2px solid white;
+  font-size: 1.25rem;
+  box-shadow: 0 4px 12px rgba(45, 179, 192, 0.3), 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: 3px solid rgba(255, 255, 255, 0.9);
   cursor: pointer;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+  flex-grow: 0;
+  order: 1; /* Places avatar on the right side in LTR layout */
+}
+
+.avatar:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(45, 179, 192, 0.4), 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 /* --- Main --- */
+.main {
+  min-height: calc(100vh - 200px);
+  padding: 0;
+}
+
 .mainContainer {
   max-width: 1100px;
   margin: 0 auto;
@@ -168,48 +230,69 @@
 .searchContainer {
   display: flex;
   align-items: center;
-  background-color: rgba(255, 255, 255, 0.2); /* שקיפות עדינה על רקע התפריט */
+  gap: 10px;
+  background-color: rgba(255, 255, 255, 0.2);
   border-radius: 50px;
-  padding: 8px 20px;
-  flex: 0 1 350px; /* רוחב השורה */
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  transition: all 0.3s ease;
-  margin: 0 15px;
+  padding: 10px 20px;
+  min-width: 200px;
+  max-width: 400px;
+  flex: 0 1 300px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  margin: 0 10px;
+  position: relative;
+  backdrop-filter: blur(10px);
+  flex-shrink: 1;
+}
+
+.searchContainer:hover {
+  background-color: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.4);
 }
 
 .searchContainer:focus-within {
-  background-color: rgba(255, 255, 255, 0.9); /* הופך ללבן אטום כשלוחצים */
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  transform: translateY(-1px);
+  background-color: rgba(255, 255, 255, 0.95);
+  border-color: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15), 0 0 0 4px rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.searchIcon {
+  width: 18px;
+  height: 18px;
+  opacity: 0.8;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+  stroke: currentColor;
+}
+
+.searchContainer:focus-within .searchIcon {
+  opacity: 1;
+  stroke: var(--primary-purple);
 }
 
 .searchInput {
   border: none;
   background: transparent;
   width: 100%;
-  color: white; /* טקסט לבן כשהוא על הרקע הצבעוני */
+  color: white;
   font-family: inherit;
   font-size: 1rem;
   outline: none;
+  padding: 0;
 }
 
-/* שינוי צבע ה-Placeholder (הטקסט הרמז) */
 .searchInput::placeholder {
   color: rgba(255, 255, 255, 0.7);
+  transition: color 0.3s ease;
 }
 
 .searchContainer:focus-within .searchInput {
-  color: var(--luxury-dark); /* טקסט כהה כשהרקע הופך ללבן */
+  color: var(--luxury-dark);
 }
 
 .searchContainer:focus-within .searchInput::placeholder {
-  color: #aaa;
-}
-
-.searchIcon {
-  font-size: 1.1rem;
-  opacity: 0.7;
-  cursor: default;
+  color: #999;
 }
 .topicsGrid {
   display: grid;
@@ -221,38 +304,234 @@
   background-color: #4fd1c5;
   color: white;
   border: none;
-  /* הקטנו מ-12px/24px ל-8px/18px */
+  /* Reduced from 12px/24px to 8px/18px */
   padding: 8px 18px; 
   border-radius: 50px;
-  /* הקטנו את הפונט מ-1.1rem ל-0.9rem */
+  /* Reduced font from 1.1rem to 0.9rem */
   font-size: 0.9rem; 
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* צל עדין יותר */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Softer shadow */
 }
 
 .btn-mint:hover {
   background-color: #38b2ac;
-  transform: translateY(-1px); /* קפיצה קטנה יותר */
+  transform: translateY(-1px); /* Smaller jump */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
 }
 .btn-mint:disabled {
   background-color: #cbd5e0;
   cursor: not-allowed;
-}/* מרווח בין הפוסטים בתוך הרשימה */
+}/* Spacing between posts in the list */
 .posts-stack {
   display: flex;
   flex-direction: column;
-  gap: 30px; /* זה מה שיוצר את המרחק בין פוסט לפוסט */
+  gap: 30px; /* This creates the distance between posts */
   margin-top: 30px;
   margin-bottom: 50px;
 }
 
-/* אופציונלי: הוספת רווח נוסף לכותרת העמוד */
+/* Optional: Additional spacing for page header */
 .page-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 30px;
+}
+
+/* --- Mobile Menu Toggle --- */
+.mobileMenuToggle {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  z-index: 1002;
+  position: relative;
+}
+
+.hamburger {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 28px;
+  height: 22px;
+  position: relative;
+}
+
+.hamburger span {
+  display: block;
+  width: 100%;
+  height: 3px;
+  background-color: white;
+  border-radius: 3px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: center;
+}
+
+.hamburgerOpen span:nth-child(1) {
+  transform: rotate(45deg) translate(8px, 8px);
+}
+
+.hamburgerOpen span:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0);
+}
+
+.hamburgerOpen span:nth-child(3) {
+  transform: rotate(-45deg) translate(8px, -8px);
+}
+
+/* --- Responsive Design --- */
+/* Ensure desktop keeps everything in one row */
+@media (min-width: 769px) {
+  .appHeader {
+    flex-wrap: nowrap;
+  }
+  
+  .appNav {
+    flex-wrap: nowrap;
+    min-width: 0;
+  }
+  
+  .navLinks {
+    flex-wrap: nowrap;
+  }
+}
+
+@media (max-width: 1024px) {
+  .appHeader {
+    padding: 12px 40px;
+    min-height: 85px;
+  }
+
+  .appLogo {
+    height: 85px;
+  }
+
+  .searchContainer {
+    max-width: 300px;
+    min-width: 180px;
+  }
+}
+
+@media (max-width: 768px) {
+  .appHeader {
+    padding: 12px 20px;
+    min-height: 80px;
+    flex-wrap: wrap;
+    border-radius: 0 0 30px 30px;
+  }
+
+  .appLogo {
+    height: 70px;
+  }
+
+  .mobileMenuToggle {
+    display: block;
+  }
+
+  .appNav {
+    position: fixed;
+    top: 80px;
+    left: 0;
+    right: 0;
+    background: linear-gradient(135deg, rgba(106, 45, 154, 0.98), rgba(45, 106, 154, 0.95));
+    backdrop-filter: blur(20px);
+    flex-direction: column;
+    align-items: stretch;
+    padding: 20px;
+    gap: 15px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    transform: translateY(-100%);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 0 0 30px 30px;
+    max-height: calc(100vh - 80px);
+    overflow-y: auto;
+  }
+
+  .appNavOpen {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .navLinks {
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    align-items: stretch;
+  }
+
+  .appLink {
+    width: 100%;
+    text-align: center;
+    padding: 12px 20px;
+    font-size: 1.1em;
+    border-radius: 15px;
+  }
+
+  .appLink::after {
+    display: none;
+  }
+
+  .searchContainer {
+    width: 100%;
+    max-width: 100%;
+    min-width: auto;
+    margin: 10px 0;
+    order: -1;
+  }
+
+  .avatar {
+    align-self: center;
+    margin-top: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .appHeader {
+    padding: 10px 15px;
+    min-height: 75px;
+    border-radius: 0 0 25px 25px;
+  }
+
+  .appLogo {
+    height: 60px;
+  }
+
+  .appNav {
+    top: 75px;
+    padding: 15px;
+    border-radius: 0 0 25px 25px;
+  }
+
+  .appLink {
+    padding: 10px 16px;
+    font-size: 1em;
+  }
+
+  .searchContainer {
+    padding: 8px 16px;
+  }
+
+  .searchInput {
+    font-size: 0.95rem;
+  }
+
+  .avatar {
+    width: 42px;
+    height: 42px;
+    font-size: 1.1rem;
+  }
+}
+
+/* Smooth scroll behavior */
+@media (prefers-reduced-motion: no-preference) {
+  .appNav {
+    scroll-behavior: smooth;
+  }
 }

@@ -8,17 +8,17 @@
 //     const status = err?.response?.status;
 //     const data = err?.response?.data;
 
-//     // זה המקרה של "נחסם ע"י AI" – לא לקרוא לזה "שגיאה כללית"
+//     // This is the case of "blocked by AI" - don't call this a "generic error"
 //     if (status === 403) {
 //       return { ok: false, type: "MODERATION_BLOCK", ...data };
-//       // data כולל messageToUser/riskLevel/categories כפי שהשרת מחזיר
+//       // data includes messageToUser/riskLevel/categories as returned by server
 //     }
 
-//     // שאר השגיאות
+//     // Other errors
 //     return {
 //       ok: false,
 //       type: "GENERIC_ERROR",
-//       messageToUser: data?.message || "משהו השתבש. נסי שוב.",
+//       messageToUser: data?.message || "Something went wrong. Please try again.",
 //       status,
 //     };
 //   }

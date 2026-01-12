@@ -6,12 +6,12 @@ const PostPublished = () => {
 
   const isSensitive = Boolean(aiMessage);
   
-  // צבעים עקביים - כתום אפרסק עדין
+  // Consistent colors - soft peach orange
   const sensitiveColor = "#f39c12"; 
-  const sensitiveBg = "rgba(243, 156, 18, 0.07)"; // רקע דקיק כמעט שקוף
+  const sensitiveBg = "rgba(243, 156, 18, 0.07)"; // Almost transparent background
 
   return (
-    <div className="mainContainer" style={{ direction: "rtl" }}>
+    <div className="mainContainer" style={{ direction: "ltr" }}>
       <div className="message-card">
         
         <h1 style={{ 
@@ -19,41 +19,38 @@ const PostPublished = () => {
           color: isSensitive ? sensitiveColor : "var(--mint-soft)", 
           fontWeight: "800",
           marginBottom: "10px"
-          // ,fontSize:"35px"
         }}>
-          {isSensitive ? "הפוסט פורסם" : "הפוסט פורסם בהצלחה"}
+          {isSensitive ? "Post Published" : "Post Published Successfully"}
         </h1>
 
-        {/* הודעת AI - גרסה קטנה וקומפקטית */}
+        {/* AI message - small and compact version */}
         {aiMessage && (
           <div style={{
             background: sensitiveBg,
-            borderRight: `3px solid ${sensitiveColor}`,
-            padding: "8px 15px", // פדינג מינימלי
+            borderLeft: `3px solid ${sensitiveColor}`,
+            padding: "8px 15px",
             borderRadius: "6px",
-            marginBottom: "15px", // רווח קטן לפוסט
-            textAlign: "right",
-            display: "inline-block", // גורם לתיבה להתאים לאורך הטקסט ולא להימתח לכל הרוחב
+            marginBottom: "15px",
+            textAlign: "left",
+            display: "inline-block",
             maxWidth: "100%"
           }}>
             <p style={{ 
               margin: 0, 
               color: "#a35d00", 
-              fontSize: "0.85rem", // פונט קטן משמעותית
+              fontSize: "0.85rem",
               fontWeight: "500",
               lineHeight: "1.4"
-              // ,fontSize:"18px"
-
             }}>
-              <span style={{ marginLeft: "5px" }}>💡</span>
+              <span style={{ marginRight: "5px" }}>💡</span>
               {aiMessage}
             </p>
           </div>
         )}
 
-        {/* תיבת הפוסט - חוזרת לגודל המקורי (המרשים) שלך */}
+        {/* Post box - back to original impressive size */}
         <div style={{ 
-          textAlign: "right", 
+          textAlign: "left", 
           background: isSensitive ? sensitiveBg : "#ffffff", 
           padding: "30px", 
           borderRadius: "24px", 
@@ -63,7 +60,7 @@ const PostPublished = () => {
           position: "relative",
           overflow: "hidden"
         }}>
-          {/* הפס העליון */}
+          {/* Top accent bar */}
           <div style={{ 
             position: "absolute", 
             top: 0, 
@@ -91,7 +88,7 @@ const PostPublished = () => {
                padding: "5px 15px",
                borderRadius: "20px"
              }}>
-               {anonymous ? "פורסם בעילום שם" : "פורסם באופן ציבורי"}
+               {anonymous ? "Published anonymously" : "Published publicly"}
              </span>
           </div>
         </div>
@@ -106,7 +103,7 @@ const PostPublished = () => {
             borderRadius: "50px"
           }}
         >
-          חזרה לפיד
+          Back to Feed
         </Link>
       </div>
     </div>

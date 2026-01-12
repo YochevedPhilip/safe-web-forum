@@ -7,7 +7,7 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  // עדיף להשתמש במשתנה סביבתי
+  // Prefer using environment variable
   const API_BASE_URL = import.meta.env.VITE_SERVER_API_URL;
 
   const handleSubmit = async (e) => {
@@ -21,16 +21,16 @@ const Register = () => {
       
       const data = await res.json();
       if (!res.ok) {
-        setMsg(data.message || `שגיאה: ${res.status}`);
+        setMsg(data.message || `Error: ${res.status}`);
         return;
       }
 
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
 
-      setMsg(`נרשמת בהצלחה! ברוך הבא ${data.user.username}`);
+      setMsg(`Successfully registered! Welcome ${data.user.username}`);
     } catch (err) {
-      setMsg("שגיאה: " + err.message);
+      setMsg("Error: " + err.message);
     }
   };
 
@@ -38,16 +38,16 @@ const Register = () => {
     <div className="mainContainer">
       <div className="form-card">
         <h1 className="page-title" style={{ textAlign: 'center', marginBottom: '10px' }}>
-          יצירת חשבון
+          Create Account
         </h1>
         <p style={{ textAlign: 'center', color: '#666', marginBottom: '30px' }}>
-          הצטרפו לקהילה שלנו והתחילו לשתף
+          Join our community and start sharing
         </p>
 
         <form onSubmit={handleSubmit}>
           <input 
             className="form-control"
-            placeholder="שם משתמש" 
+            placeholder="Username" 
             value={username} 
             onChange={(e) => setUsername(e.target.value)}
             required
@@ -56,7 +56,7 @@ const Register = () => {
           <input 
             type="email"
             className="form-control"
-            placeholder="אימייל" 
+            placeholder="Email" 
             value={email} 
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -65,27 +65,27 @@ const Register = () => {
           <input 
             type="password"
             className="form-control"
-            placeholder="סיסמה" 
+            placeholder="Password" 
             value={password} 
             onChange={(e) => setPassword(e.target.value)}
             required
           />
 
           <button type="submit" className="btn-pink">
-            הרשמה
+            Sign Up
           </button>
 
           <div style={{ marginTop: '20px', textAlign: 'center' }}>
-            <span style={{ color: '#666' }}>כבר יש לכם חשבון? </span>
+            <span style={{ color: '#666' }}>Already have an account? </span>
             <Link to="/login" style={{ color: 'var(--mint-soft)', fontWeight: 'bold' }}>
-              התחברו כאן
+              Sign in here
             </Link>
           </div>
 
           {msg && (
             <p style={{ 
               marginTop: '20px', 
-              color: msg.includes('שגיאה') ? '#ff6b6b' : 'var(--mint-soft)',
+              color: msg.includes('Error') || msg.includes('error') ? '#ff6b6b' : 'var(--mint-soft)',
               fontWeight: '600',
               textAlign: 'center'
             }}>

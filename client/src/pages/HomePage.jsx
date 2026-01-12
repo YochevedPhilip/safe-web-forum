@@ -16,12 +16,12 @@ const HomePageDemo = ({ searchQuery = "" }) => {
 
   const getTopicImage = (title, index) => {
     const images = {
-      "כלים להרגעה וחוסן נפשי": "https://images.unsplash.com/photo-1506126613408-eca07ce68773?q=80&w=800",
-      "תחושת בדידות": "https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?q=80&w=800",
-      "יחסים עם הורים ומשפחה": "https://images.unsplash.com/photo-1490312278390-ab64016e0aa9?q=80&w=800",
-      "עתיד, חלומות וקריירה": "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?q=80&w=800",
-      "חברות וקשרים חברתיים": "https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=800",
-      "דימוי עצמי וביטחון": "https://images.unsplash.com/photo-1515377905703-c4788e51af15?q=80&w=800"
+      "Tools for Calm and Mental Resilience": "https://images.unsplash.com/photo-1506126613408-eca07ce68773?q=80&w=800",
+      "Feelings of Loneliness": "https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?q=80&w=800",
+      "Relationships with Parents and Family": "https://images.unsplash.com/photo-1490312278390-ab64016e0aa9?q=80&w=800",
+      "Future, Dreams and Career": "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?q=80&w=800",
+      "Friendship and Social Connections": "https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=800",
+      "Self-Image and Confidence": "https://images.unsplash.com/photo-1515377905703-c4788e51af15?q=80&w=800"
     };
     return images[title] || `https://picsum.photos/seed/${index}/800/600?grayscale`;
   };
@@ -59,8 +59,8 @@ const HomePageDemo = ({ searchQuery = "" }) => {
     t.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  if (loading) return <div className="mainContainer" style={{ textAlign: 'center' }}>טוען חוויה...</div>;
-  if (error) return <div className="mainContainer"><div className="message-card"><h2>אופס!</h2><p>{error}</p></div></div>;
+  if (loading) return <div className="mainContainer" style={{ textAlign: 'center' }}>Loading topics...</div>;
+  if (error) return <div className="mainContainer"><div className="message-card"><h2>Oops!</h2><p>{error}</p></div></div>;
 
   return (
     <div className="mainContainer">
@@ -80,15 +80,15 @@ const HomePageDemo = ({ searchQuery = "" }) => {
           >
             {username.charAt(0).toUpperCase()}
           </div>
-          <h2 style={{ margin: 0 }}>שלום, {username}!</h2>
+          <h2 style={{ margin: 0 }}>Hello, {username}!</h2>
         </div>
       )}
 
-      <h1 className="heroTitle">מה שעל <b>הלב שלך</b> היום?</h1>
+      <h1 className="heroTitle">What's on <b>your mind</b> today?</h1>
 
       {filteredTopics.length === 0 ? (
         <div className="message-card">
-          <p>{searchQuery ? `לא נמצאו נושאים שתואמים ל-"${searchQuery}"` : "עדיין אין נושאים להצגה."}</p>
+          <p>{searchQuery ? `No topics found matching "${searchQuery}"` : "No topics available yet."}</p>
         </div>
       ) : (
         <div className="topicsGrid">
